@@ -4480,6 +4480,34 @@ try {
   // 暴露到 window，也支持 console 手动切换 / 美化导入导出
   try { window.mochiChatStyle = { get: getChatStyle, set: applyChatStyle }; } catch (e) {}
 
+  // 聊天风格设置行：点击弹 pills 选择，val 实时回显
+  try {
+    const chatStyleRow = document.getElementById('row-chat-style');
+    const chatStyleVal = document.getElementById('chat-style-val');
+    const CHAT_STYLE_PILLS = [
+      { label: '默认', value: 'default' },
+      { label: '微信风格', value: 'wechat' }
+    ];
+    const refreshChatStyleVal = () => {
+      if (chatStyleVal) chatStyleVal.textContent = (getChatStyle() === 'wechat') ? '微信风格' : '默认';
+    };
+    refreshChatStyleVal();
+    if (chatStyleRow) {
+      chatStyleRow.addEventListener('click', () => {
+        if (!window.openModal) { applyChatStyle(getChatStyle() === 'wechat' ? 'default' : 'wechat'); refreshChatStyleVal(); return; }
+        const cur = getChatStyle();
+        const ctl = window.openModal('聊天风格', '', (v) => {
+          if (v !== 'default' && v !== 'wechat') return;
+          applyChatStyle(v);
+          refreshChatStyleVal();
+        }, { noInput: true, pillSubmit: true, pill: cur, pills: CHAT_STYLE_PILLS, staticText: '切换聊天界面的气泡样式与配色，不影响聊天功能本身' });
+        if (ctl && ctl.pills) ctl.pills(CHAT_STYLE_PILLS, cur);
+      });
+    }
+    // 跨页面回来时同步 val
+    document.addEventListener('mochi-restore-done', refreshChatStyleVal);
+  } catch (e) {}
+
   // ===== v3.6.x：主题色（全局，覆盖按钮/激活态颜色） =====
   const ACCENT_KEY = 'xy-home-v2:accent-color';
   // v3.27.x：手输色值通用弹窗——部分手机（厂商内置浏览器 / APP 内嵌 WebView / 旧内核）
