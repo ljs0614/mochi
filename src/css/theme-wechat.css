@@ -144,6 +144,83 @@
   border-radius: 4px;
 }
 
+/* ===== 图片 & 表情包：微信风格下裸放（无气泡包裹）=====
+   当 .msg-bubble 内**只有**一张图片（无子元素或只有 quote）时：
+   ① 气泡透明化（去背景/边/阴影/圆角/内边距/小尾巴）
+   ② 图片本身给圆角 + proper sizing（大图 260px / 表情包 96px）*/
+
+/* 只有图片的气泡 → 透明化 */
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img:only-child),
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-big:only-child),
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-sm:only-child) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+  display: inline-block !important;
+}
+/* 图片气泡去 CSS 三角形小尾巴 */
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img:only-child)::before,
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-big:only-child)::before,
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-sm:only-child)::before {
+  display: none !important;
+}
+
+/* 大图（照片）——裸放，圆角 4px（微信照片圆角比气泡小） */
+[data-chat-style="wechat"] .msg-img-big,
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-big:only-child) .msg-img {
+  max-width: 260px !important;
+  max-height: 260px !important;
+  border-radius: 4px !important;
+  display: block !important;
+  cursor: zoom-in;
+}
+/* 表情包 GIF —— 裸放，尺寸维持 96px */
+[data-chat-style="wechat"] .msg-img-sm,
+[data-chat-style="wechat"] .msg-bubble:has(> .msg-img-sm:only-child) .msg-img {
+  max-width: 96px !important;
+  max-height: 96px !important;
+  border-radius: 2px !important;
+  display: block !important;
+}
+
+/* 组合消息（图文混排）：msg-parts-imgs 内的图片也去气泡色 */
+[data-chat-style="wechat"] .msg-parts-imgs .msg-img-big {
+  max-width: 110px !important;
+  max-height: 110px !important;
+  border-radius: 4px !important;
+}
+[data-chat-style="wechat"] .msg-parts-imgs .msg-img-sm {
+  max-width: 72px !important;
+  max-height: 72px !important;
+  border-radius: 2px !important;
+}
+/* 组合消息里的 msg-bubble 保持气泡色（因为还有文字） */
+[data-chat-style="wechat"] .msg-bubble:has(.msg-parts-imgs) {
+  background: var(--_wechat_bubble_bg, inherit);
+}
+
+/* 语音消息：保持有气泡，但让播放按钮更贴合微信
+   对方发来的语音 → 白色气泡内；自己发出的 → 绿色气泡内 */
+[data-chat-style="wechat"] .msg-voice {
+  min-width: 140px;
+}
+[data-chat-style="wechat"] .msg-voice-play {
+  background: #0000000d;
+  border: none;
+  border-radius: 50%;
+}
+[data-chat-style="wechat"] .msg-in .msg-bubble .msg-voice-play {
+  background: rgba(0,0,0,.06);
+  border: none;
+}
+[data-chat-style="wechat"] .msg-out .msg-bubble .msg-voice-play {
+  background: rgba(255,255,255,.4);
+  border: none;
+}
+
 /* ---- 群聊气泡 ---- */
 [data-chat-style="wechat"] .group-bubble-me {
   background: #95EC69 !important;
