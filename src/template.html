@@ -23,7 +23,7 @@
 <!-- v3.27.x 三档主题的启动落位（#252 收口）：浅色/深色按存储直挂；auto 档此前头部
      脚本只认 dark、系统深色的 auto 用户会先白闪再由 personalize.js 纠正（FOUC）。
      另：旧版本残留的 data-theme 属性在此强制清掉，保证「选浅色」真回浅色。 -->
-<script>try{var _tm=localStorage.getItem('xy-home-v2:theme-mode');if(_tm==='dark'||(_tm!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');}catch(e){}</script>
+<script>try{var _tm=localStorage.getItem('xy-home-v2:theme-mode');if(_tm==='dark'||(_tm!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');}catch(e){}try{var _cs=localStorage.getItem('xy-home-v2:chat-style');if(_cs==='wechat')document.documentElement.setAttribute('data-chat-style','wechat');else document.documentElement.removeAttribute('data-chat-style');}catch(e){}</script>
 <style>
 /*__STYLES__*/
 </style>

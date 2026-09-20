@@ -1,0 +1,156 @@
+/* ===== 聊天主题：微信风格（纯 CSS 覆盖，不改动任何原有样式） =====
+   只在 [data-chat-style="wechat"] 下生效；与 data-theme（深色/浅色）独立，
+   两者可任意组合（浅色+微信 / 深色+微信绿气泡）。默认主题、深色主题完全不受影响。
+   配色参考：微信聊天背景 #EDEDED、发消息气泡绿 #95EC69、收消息气泡白 #FFFFFF、
+   顶栏/输入栏灰 #F7F7F7。气泡形状更方、无渐变阴影，贴近微信的扁平感。
+   气泡小尾巴是 CSS 三角形伪元素，不影响消息内容渲染。 */
+
+/* ---- 聊天页面整体 ---- */
+[data-chat-style="wechat"] #page-chat {
+  --bg-b: #EDEDED;
+  --cs-bar-rgb: 247, 247, 247;
+  background: #EDEDED;
+}
+[data-chat-style="wechat"] .chat-body {
+  background: #EDEDED;
+  padding: 10px 12px;
+  gap: 10px;
+}
+
+/* ---- 聊天气泡（双方） ---- */
+[data-chat-style="wechat"] .msg-bubble {
+  --chat-bubble-radius: 6px;
+  --chat-bubble-pad: 9px 12px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  box-shadow: none;
+  border: none;
+  font-size: 15px;
+}
+
+/* 对方发来的气泡：白底 + 极细灰边 + 深色字 */
+[data-chat-style="wechat"] .msg-in .msg-bubble {
+  background: #FFFFFF;
+  color: #111111;
+  border: 1px solid rgba(0,0,0,.06);
+}
+/* 自己发出的气泡：微信经典绿 + 黑字 */
+[data-chat-style="wechat"] .msg-out .msg-bubble {
+  background: #95EC69;
+  color: #000000;
+  border: 1px solid rgba(0,0,0,.05);
+}
+
+/* ---- 气泡小尾巴（微信风格 CSS 三角形） ---- */
+[data-chat-style="wechat"] .msg-bubble::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  width: 0; height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+[data-chat-style="wechat"] .msg-in .msg-bubble::before {
+  left: -6px;
+  border-right: 6px solid #FFFFFF;
+}
+[data-chat-style="wechat"] .msg-out .msg-bubble::before {
+  right: -6px;
+  border-left: 6px solid #95EC69;
+}
+
+/* ---- 聊天顶栏 ---- */
+[data-chat-style="wechat"] .chat-head,
+[data-chat-style="wechat"] .page.full .chat-head {
+  background: #F7F7F7;
+  border-bottom: 1px solid #D6D6D6;
+  box-shadow: none;
+  padding: 10px 16px;
+}
+
+/* ---- 输入栏 ---- */
+[data-chat-style="wechat"] .chat-input-row,
+[data-chat-style="wechat"] .page.full .chat-input-row {
+  background: #F7F7F7;
+  border: 1px solid #D6D6D6;
+  border-radius: 4px;
+  padding: 8px 10px;
+  box-shadow: none;
+  margin-top: 4px;
+}
+
+/* ---- 发送按钮 ---- */
+[data-chat-style="wechat"] .chat-send {
+  background: #F7F7F7;
+  color: #000000;
+  border: 1px solid #C6C6C6;
+  border-radius: 4px;
+  padding: 9px 18px;
+  font-weight: 500;
+}
+[data-chat-style="wechat"] .chat-send:active {
+  background: #E8E8E8;
+}
+
+/* ---- 时间戳 ---- */
+[data-chat-style="wechat"] .msg-time { color: #888888; font-size: 11px; }
+[data-chat-style="wechat"] .msg-date-sep { color: #999999; }
+[data-chat-style="wechat"] .msg-date-sep span {
+  background: #EDEDED;
+  color: #999999;
+  border-radius: 0;
+  padding: 1px 6px;
+  font-size: 11px;
+}
+
+/* ---- 加号按钮 ---- */
+[data-chat-style="wechat"] .chat-plus-btn {
+  background: #F7F7F7;
+  border: 1px solid #D6D6D6;
+  color: #333;
+}
+[data-chat-style="wechat"] .chat-plus-btn:active { background: #E8E8E8; }
+
+/* ---- 头像 ---- */
+[data-chat-style="wechat"] .msg-av img,
+[data-chat-style="wechat"] .msg-av svg { border-radius: 6px; }
+
+/* ---- 消息操作面板 ---- */
+[data-chat-style="wechat"] .msg-actions-panel {
+  background: #F7F7F7;
+  border: 1px solid #D6D6D6;
+  border-radius: 4px;
+}
+
+/* ---- 群聊 ---- */
+[data-chat-style="wechat"] .group-bubble-me {
+  background: #95EC69 !important;
+  color: #000000 !important;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.05);
+}
+[data-chat-style="wechat"] .group-bubble-other {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* ---- 深色模式叠加：data-chat-style="wechat" + data-theme="dark" ----
+   微信绿气泡在深色下保持（经典特征），其余走深色基调 ---- */
+[data-chat-style="wechat"][data-theme="dark"] .msg-in .msg-bubble {
+  background: #2C2C2E;
+  color: #F0F0F0;
+  border-color: rgba(255,255,255,.08);
+}
+[data-chat-style="wechat"][data-theme="dark"] .msg-in .msg-bubble::before {
+  border-right-color: #2C2C2E;
+}
+[data-chat-style="wechat"][data-theme="dark"] #page-chat,
+[data-chat-style="wechat"][data-theme="dark"] .chat-body {
+  background: #1C1C1E;
+}
+[data-chat-style="wechat"][data-theme="dark"] .msg-date-sep span {
+  background: #1C1C1E;
+  color: #777;
+}

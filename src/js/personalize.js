@@ -4467,6 +4467,19 @@ try {
     });
   }
 
+  // ===== 聊天风格（微信风格气泡/配色）=====
+  // 与 data-theme 独立：微信聊天气泡可以叠加浅色或深色，两者互不干扰。
+  const CHAT_STYLE_KEY = 'xy-home-v2:chat-style';
+  const getChatStyle = () => { try { return localStorage.getItem(CHAT_STYLE_KEY) === 'wechat' ? 'wechat' : 'default'; } catch (e) { return 'default'; } };
+  const applyChatStyle = (mode) => {
+    try { localStorage.setItem(CHAT_STYLE_KEY, mode === 'wechat' ? 'wechat' : 'default'); } catch (e) {}
+    if (mode === 'wechat') document.documentElement.setAttribute('data-chat-style', 'wechat');
+    else document.documentElement.removeAttribute('data-chat-style');
+    try { toast(mode === 'wechat' ? '已切换为微信聊天风格' : '已恢复默认聊天风格'); } catch (e) {}
+  };
+  // 暴露到 window，也支持 console 手动切换 / 美化导入导出
+  try { window.mochiChatStyle = { get: getChatStyle, set: applyChatStyle }; } catch (e) {}
+
   // ===== v3.6.x：主题色（全局，覆盖按钮/激活态颜色） =====
   const ACCENT_KEY = 'xy-home-v2:accent-color';
   // v3.27.x：手输色值通用弹窗——部分手机（厂商内置浏览器 / APP 内嵌 WebView / 旧内核）

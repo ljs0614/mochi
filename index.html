@@ -23,7 +23,7 @@
 <!-- v3.27.x 三档主题的启动落位（#252 收口）：浅色/深色按存储直挂；auto 档此前头部
      脚本只认 dark、系统深色的 auto 用户会先白闪再由 personalize.js 纠正（FOUC）。
      另：旧版本残留的 data-theme 属性在此强制清掉，保证「选浅色」真回浅色。 -->
-<script>try{var _tm=localStorage.getItem('xy-home-v2:theme-mode');if(_tm==='dark'||(_tm!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');}catch(e){}</script>
+<script>try{var _tm=localStorage.getItem('xy-home-v2:theme-mode');if(_tm==='dark'||(_tm!=='light'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.setAttribute('data-theme','dark');else document.documentElement.removeAttribute('data-theme');}catch(e){}try{var _cs=localStorage.getItem('xy-home-v2:chat-style');if(_cs==='wechat')document.documentElement.setAttribute('data-chat-style','wechat');else document.documentElement.removeAttribute('data-chat-style');}catch(e){}</script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root {
@@ -10087,6 +10087,128 @@ font-family:inherit; padding:4px 2px; cursor:pointer; -webkit-tap-highlight-colo
 .set-row .txt { font-size: calc(14px + var(--mochi-text-adj, 0px)); }
 .set-row .txt .sub { font-size: calc(11.5px + var(--mochi-text-adj, 0px)); }
 .gc-set-row .txt { font-size: calc(14px + var(--mochi-text-adj, 0px)); }
+[data-chat-style="wechat"] #page-chat {
+--bg-b: #EDEDED;
+--cs-bar-rgb: 247, 247, 247;
+background: #EDEDED;
+}
+[data-chat-style="wechat"] .chat-body {
+background: #EDEDED;
+padding: 10px 12px;
+gap: 10px;
+}
+[data-chat-style="wechat"] .msg-bubble {
+--chat-bubble-radius: 6px;
+--chat-bubble-pad: 9px 12px;
+padding: 9px 12px;
+border-radius: 6px;
+box-shadow: none;
+border: none;
+font-size: 15px;
+}
+[data-chat-style="wechat"] .msg-in .msg-bubble {
+background: #FFFFFF;
+color: #111111;
+border: 1px solid rgba(0,0,0,.06);
+}
+[data-chat-style="wechat"] .msg-out .msg-bubble {
+background: #95EC69;
+color: #000000;
+border: 1px solid rgba(0,0,0,.05);
+}
+[data-chat-style="wechat"] .msg-bubble::before {
+content: '';
+position: absolute;
+top: 12px;
+width: 0; height: 0;
+border-top: 6px solid transparent;
+border-bottom: 6px solid transparent;
+}
+[data-chat-style="wechat"] .msg-in .msg-bubble::before {
+left: -6px;
+border-right: 6px solid #FFFFFF;
+}
+[data-chat-style="wechat"] .msg-out .msg-bubble::before {
+right: -6px;
+border-left: 6px solid #95EC69;
+}
+[data-chat-style="wechat"] .chat-head,
+[data-chat-style="wechat"] .page.full .chat-head {
+background: #F7F7F7;
+border-bottom: 1px solid #D6D6D6;
+box-shadow: none;
+padding: 10px 16px;
+}
+[data-chat-style="wechat"] .chat-input-row,
+[data-chat-style="wechat"] .page.full .chat-input-row {
+background: #F7F7F7;
+border: 1px solid #D6D6D6;
+border-radius: 4px;
+padding: 8px 10px;
+box-shadow: none;
+margin-top: 4px;
+}
+[data-chat-style="wechat"] .chat-send {
+background: #F7F7F7;
+color: #000000;
+border: 1px solid #C6C6C6;
+border-radius: 4px;
+padding: 9px 18px;
+font-weight: 500;
+}
+[data-chat-style="wechat"] .chat-send:active {
+background: #E8E8E8;
+}
+[data-chat-style="wechat"] .msg-time { color: #888888; font-size: 11px; }
+[data-chat-style="wechat"] .msg-date-sep { color: #999999; }
+[data-chat-style="wechat"] .msg-date-sep span {
+background: #EDEDED;
+color: #999999;
+border-radius: 0;
+padding: 1px 6px;
+font-size: 11px;
+}
+[data-chat-style="wechat"] .chat-plus-btn {
+background: #F7F7F7;
+border: 1px solid #D6D6D6;
+color: #333;
+}
+[data-chat-style="wechat"] .chat-plus-btn:active { background: #E8E8E8; }
+[data-chat-style="wechat"] .msg-av img,
+[data-chat-style="wechat"] .msg-av svg { border-radius: 6px; }
+[data-chat-style="wechat"] .msg-actions-panel {
+background: #F7F7F7;
+border: 1px solid #D6D6D6;
+border-radius: 4px;
+}
+[data-chat-style="wechat"] .group-bubble-me {
+background: #95EC69 !important;
+color: #000000 !important;
+border-radius: 6px;
+border: 1px solid rgba(0,0,0,.05);
+}
+[data-chat-style="wechat"] .group-bubble-other {
+background: #FFFFFF !important;
+color: #111111 !important;
+border-radius: 6px;
+border: 1px solid rgba(0,0,0,.06);
+}
+[data-chat-style="wechat"][data-theme="dark"] .msg-in .msg-bubble {
+background: #2C2C2E;
+color: #F0F0F0;
+border-color: rgba(255,255,255,.08);
+}
+[data-chat-style="wechat"][data-theme="dark"] .msg-in .msg-bubble::before {
+border-right-color: #2C2C2E;
+}
+[data-chat-style="wechat"][data-theme="dark"] #page-chat,
+[data-chat-style="wechat"][data-theme="dark"] .chat-body {
+background: #1C1C1E;
+}
+[data-chat-style="wechat"][data-theme="dark"] .msg-date-sep span {
+background: #1C1C1E;
+color: #777;
+}
 </style>
 </head>
 <body>
@@ -10329,9 +10451,9 @@ font-family:inherit; padding:4px 2px; cursor:pointer; -webkit-tap-highlight-colo
     <div class="splash-footcard">
       <!-- v3.8.y：底部版本块——两行：名称+版本 / 部署时间+实时秒数（实时秒写入 #splash-ver-live） -->
       <!-- #570：第三行开屏新版检测（ver-check.js 渲染）：检测中 / ✓已是最新 / ⇩有新版本可点更新 -->
-      <div class="splash-ver" id="splash-ver" data-build-ts="1789865465380">
-        <span class="sv-app">Mochi 字卡传讯 <b>v3.26.0</b></span>
-        <span class="sv-deploy">部署于 2026-09-20 08:51<span id="splash-ver-live"></span></span>
+      <div class="splash-ver" id="splash-ver" data-build-ts="1789870082358">
+        <span class="sv-app">Mochi 字卡传讯 <b>v3.26.560</b></span>
+        <span class="sv-deploy">部署于 2026-09-20 10:08<span id="splash-ver-live"></span></span>
         <span class="sv-check" id="splash-ver-check" hidden></span>
       </div>
       <!-- v3.5.120：数据（IndexedDB 回填）加载完成前不显示「点击进入」按钮，
@@ -11806,7 +11928,7 @@ font-family:inherit; padding:4px 2px; cursor:pointer; -webkit-tap-highlight-colo
         <div class="set-row" id="row-changelog">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 12c0-5.5 3.5-10 10-10 3.7 0 7 2 8.8 5M22 12c0 5.5-3.5 10-10 10-3.7 0-7-2-8.8-5"/></svg></div>
           <div class="txt">版本与更新<span class="sub">当前版本 · 一键更新到最新（更新摘要见开屏公告）</span></div>
-          <div class="val" id="about-ver-val">v3.26.0</div>
+          <div class="val" id="about-ver-val">v3.26.560</div>
           <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
         </div>
         <!-- #606 开源与致谢：开源/私有部署说明 + 灵感来源与致谢（内容与功能介绍页同源，做成独立入口） -->
@@ -11875,7 +11997,7 @@ font-family:inherit; padding:4px 2px; cursor:pointer; -webkit-tap-highlight-colo
         </div>
       </div>
       </div><!-- /them-sec about -->
-      <div class="ver">Mochi 字卡传讯 v3.26.0</div>
+      <div class="ver">Mochi 字卡传讯 v3.26.560</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       <!-- v3.27.x：设置页底部防骗声明 -->
       <div class="set-alert">
@@ -12269,7 +12391,7 @@ font-family:inherit; padding:4px 2px; cursor:pointer; -webkit-tap-highlight-colo
             <div class="lic-hero-top">
               <div class="lic-title">Mochi 字卡传讯</div>
               <span class="lic-badge">原版</span>
-              <span class="lic-ver">v3.26.0</span>
+              <span class="lic-ver">v3.26.560</span>
             </div>
             <div class="lic-p">原创极简风情侣字卡传讯，不是小手机：黑白灰简约设计，数据全部保存在本地、无需联网；所有内容均为代码触发、按概率运行，联系方可主动发送聊天消息。代码从零编写并完全开源——本作即原版。</div>
             <!-- v3.26.x #648：原版口径澄清——唯一原版使用网站＋其他版本均为开放二传二改产生的二传/二改版 -->
@@ -28543,6 +28665,15 @@ applyThemeMode(v);
 if (ctl && ctl.pills) ctl.pills(threePills, cur);
 });
 }
+const CHAT_STYLE_KEY = 'xy-home-v2:chat-style';
+const getChatStyle = () => { try { return localStorage.getItem(CHAT_STYLE_KEY) === 'wechat' ? 'wechat' : 'default'; } catch (e) { return 'default'; } };
+const applyChatStyle = (mode) => {
+try { localStorage.setItem(CHAT_STYLE_KEY, mode === 'wechat' ? 'wechat' : 'default'); } catch (e) {}
+if (mode === 'wechat') document.documentElement.setAttribute('data-chat-style', 'wechat');
+else document.documentElement.removeAttribute('data-chat-style');
+try { toast(mode === 'wechat' ? '已切换为微信聊天风格' : '已恢复默认聊天风格'); } catch (e) {}
+};
+try { window.mochiChatStyle = { get: getChatStyle, set: applyChatStyle }; } catch (e) {}
 const ACCENT_KEY = 'xy-home-v2:accent-color';
 const openHexColorModal = (title, cur, apply) => {
 if (!window.openModal) return;
@@ -79748,4 +79879,4 @@ if (window.__mochiLoaded) window.__mochiLoaded.push("mobile-adapt.js");
 </body>
 </html>
 
-<!-- __MOCHI_EOF__ mu93onxg -->
+<!-- __MOCHI_EOF__ mu96fmeu -->
