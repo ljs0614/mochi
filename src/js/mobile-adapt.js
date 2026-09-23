@@ -1591,6 +1591,31 @@
       var _aVV = window.visualViewport;
       if (_aVV && _aPhone) {
         var _aH = _aVV.height; // 无键盘基准（跟随地址栏显隐更新）
+        // FIX 2026-09-23：dvh 单位不支持的安卓浏览器（Chrome<108/老内核，诊断报「CSS dvh=
+        // 不支持」）兜底——100vh=大视口（工具栏隐藏），工具栏显示时 inner/vv 缩小但 100vh
+        // 不变 → .phone 底部溢出可视区 + body(100vh) 高于 .phone 致 flex 居中露上下边/可纵滚。
+        // 把 --mochi-ios-h 写成 visualViewport 实测高（base.css 窄屏/force-mobile 的
+        // @supports not (height:100dvh) 块让 html,body 与 .phone 都消费它）；dvh 支持的
+        // 浏览器 @supports 块走 100dvh，本变量不生效。键盘期 .phone 内联 height 由
+        // syncAndroidKb 接管（内联赢 CSS），收键盘清内联后回落本变量＝贴回可视底。
+        var _aDvhOk = false;
+        try { _aDvhOk = !!(window.CSS && CSS.supports && (CSS.supports('height: 1dvh') || CSS.supports('height', '1dvh'))); } catch (eDV) {}
+        if (!_aDvhOk) {
+          function _aSyncVhPolyfill() {
+            try {
+              var _vvH = Math.round((_aVV.height || 0) * ((_aVV.scale && _aVV.scale > 0.5) ? _aVV.scale : 1));
+              if (_vvH > 0) {
+                var _d = document.documentElement;
+                var _cur = parseFloat(_d.style.getPropertyValue('--mochi-ios-h'));
+                if (isNaN(_cur) || Math.abs(_vvH - _cur) >= 2) _d.style.setProperty('--mochi-ios-h', _vvH + 'px');
+              }
+            } catch (eP) {}
+          }
+          _aSyncVhPolyfill();
+          try { _aVV.addEventListener('resize', _aSyncVhPolyfill); } catch (eR1) {}
+          try { window.addEventListener('resize', _aSyncVhPolyfill); } catch (eR2) {}
+          try { window.addEventListener('orientationchange', function () { setTimeout(_aSyncVhPolyfill, 120); }); } catch (eR3) {}
+        }
         var _aKb = false;
         // FIX 2026-09-07 #236：键盘会话计时/vv 残留闩——HeyTapBrowser（OPPO K13 Turbo
         // Pro 实报「屏幕下方大片空白」）收键盘后 vv.height 恒停在 inner−底栏高不回基准，

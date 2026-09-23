@@ -581,12 +581,20 @@ html { margin:0; padding:0; }
     /* v3.5.139：显式声明——padding(0 18px 18px) 必须算进 100dvh 内，
        否则实际高度超视口、底部导航栏/组件被截 */
     box-sizing:border-box;
-    width:100vw; height:100vh;
+    /* FIX 2026-09-23：dvh 不支持的安卓浏览器（Chrome<108/老内核）100vh=大视口（工具栏
+       隐藏），工具栏显示时 inner/vv 缩小但 100vh 不变 → .phone 底部溢出可视区。改走
+       --mochi-ios-h（mobile-adapt 安卓 dvh 兜底写入的 visualViewport 实测高），未设时
+       回落 100vh；dvh 支持的浏览器由下方 @supports 块的 100dvh 覆盖。 */
+    width:100vw; height:var(--mochi-ios-h, 100vh);
     border-radius:0; box-shadow:none;
     padding:0 calc(18px + var(--mochi-side-adj,0px)) 18px;
   }
   /* #853：svh/dvh 收进 @supports（老 WebKit 计算期作废机制，见上） */
-  @supports (height: 100dvh) { .phone { height:100svh; height:100dvh; } }
+  @supports (height: 100dvh) { html, body { height:100svh; height:100dvh; } .phone { height:100svh; height:100dvh; } }
+  /* FIX 2026-09-23：dvh 不支持时 html/body 也钉到 --mochi-ios-h，否则 body 仍 100vh（大
+     视口）高于 .phone，flex 居中把 .phone 上下各露一条 body 底色 + 页面可纵向滚。min-height
+     同步覆盖（原 min-height:100vh 会把 height:var(...) 撑回 100vh）。 */
+  @supports not (height: 100dvh) { html, body { height:var(--mochi-ios-h, 100vh); min-height:var(--mochi-ios-h, 100vh); } }
   .statusbar {
     /* v3.5.127：max 兜底——真全屏挖孔屏 env() 返回 0 时保留 14px 最小留白。
        v3.28.x #114：优先用 JS 实测的 --mochi-safe-top（iOS standalone 下
@@ -608,12 +616,14 @@ html { margin:0; padding:0; }
 html.force-mobile, html.force-mobile body { padding:0; min-height:100vh; min-height:100svh; min-height:100dvh; background:var(--bg-b, #fff); }
 html.force-mobile .phone {
   box-sizing:border-box;
-  width:100vw; height:100vh;
+  width:100vw; height:var(--mochi-ios-h, 100vh);
   border-radius:0; box-shadow:none;
   padding:0 calc(18px + var(--mochi-side-adj,0px)) 18px;
 }
 /* #853：svh/dvh 收进 @supports（老 WebKit 计算期作废机制，见上） */
-@supports (height: 100dvh) { html.force-mobile .phone { height:100svh; height:100dvh; } }
+@supports (height: 100dvh) { html.force-mobile, html.force-mobile body { height:100svh; height:100dvh; } html.force-mobile .phone { height:100svh; height:100dvh; } }
+/* FIX 2026-09-23：dvh 不支持时 html/body 钉到 --mochi-ios-h（同窄屏 @media 块语义） */
+@supports not (height: 100dvh) { html.force-mobile, html.force-mobile body { height:var(--mochi-ios-h, 100vh); min-height:var(--mochi-ios-h, 100vh); } }
 html.force-mobile .statusbar {
   padding-top:max(calc(14px + var(--mochi-safe-top, env(safe-area-inset-top, 0px))), 14px);
   padding-bottom:10px;
