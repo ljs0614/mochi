@@ -3033,6 +3033,53 @@ border:1.5px solid transparent; background:var(--btn-bg,#111); color:var(--btn-i
 [data-theme="dark"] .voice-card.recording .voice-wave i { opacity:.9; }
 [data-theme="dark"] .msg-voice-play.voice-play-btn { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.16); }
 [data-theme="dark"] .voice-rec-btn { border-color:rgba(255,255,255,.28); color:#fff; }
+.tw-wrap { padding: 16px 12px; display:flex; flex-direction:column; gap:12px; align-items:center; }
+.tw-pointer { text-align:center; font-size:13px; color:var(--muted,#888); padding:4px 0; }
+.tw-wheel-box { position:relative; width:200px; height:200px; margin:0 auto; }
+.tw-wheel { width:100%; height:100%; border-radius:50%; position:relative; overflow:visible; border:3px solid var(--card-border,#ddd); box-shadow:0 4px 16px rgba(0,0,0,.08); }
+.tw-inner { width:100%; height:100%; border-radius:50%; position:relative; }
+.tw-seg { position:absolute; top:0; left:0; width:50%; height:50%; transform-origin:100% 100%; border-right:1px solid var(--card-border,#ddd); border-bottom:1px solid var(--card-border,#ddd); }
+.tw-label { position:absolute; top:50%; left:50%; transform-origin:0 0; font-size:16px; font-weight:700; user-select:none; }
+.tw-center { position:absolute; top:50%; left:50%; width:36px; height:36px; margin:-18px 0 0 -18px; border-radius:50%; background:var(--card-bg,#fff); border:3px solid var(--ink,#111); display:flex; align-items:center; justify-content:center; font-size:18px; z-index:2; }
+.tw-pointer-bar { position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:18px solid var(--ink,#111); z-index:3; }
+.tw-result { width:100%; padding:12px 14px; background:rgba(0,0,0,.04); border-radius:10px; font-size:14px; line-height:1.7; }
+.tr-q-text { font-weight:600; }
+.tw-answer { width:100%; display:flex; flex-direction:column; gap:8px; }
+.tw-answer textarea { width:100%; padding:10px 12px; border:1px solid var(--card-border,#ddd); border-radius:10px; background:var(--card-bg,#fff); font-size:14px; resize:vertical; min-height:60px; font-family:inherit; }
+.tw-answer-row { display:flex; justify-content:flex-end; }
+.tw-footer { display:flex; gap:8px; width:100%; }
+.tw-footer .ta-add-btn { flex:1; }
+.tw-end-btn { background:rgba(220,38,38,.8) !important; color:#fff !important; }
+.tw-custom { width:100%; display:flex; gap:6px; align-items:center; padding-top:8px; border-top:1px solid var(--card-border,#ddd); }
+.tw-custom .tc-input { flex:1; }
+.guess-wrap { padding:16px 12px; display:flex; flex-direction:column; gap:14px; }
+.guess-msg { font-size:15px; line-height:1.8; text-align:center; padding:12px; border-radius:10px; background:rgba(0,0,0,.04); min-height:48px; }
+.guess-msg.start { background:rgba(59,130,246,.1); color:#2563eb; }
+.guess-msg.big { background:rgba(239,68,68,.1); color:#dc2626; }
+.guess-msg.small { background:rgba(59,130,246,.1); color:#2563eb; }
+.guess-msg.hit { background:rgba(34,197,94,.12); color:#16a34a; font-weight:600; font-size:16px; }
+.guess-msg.err { background:rgba(245,158,11,.1); color:#b45309; font-size:13px; }
+.guess-range-bar { display:flex; align-items:center; gap:8px; font-size:13px; }
+.guess-range-track { flex:1; height:8px; background:rgba(0,0,0,.08); border-radius:4px; position:relative; overflow:hidden; }
+.guess-range-fill { height:100%; background:linear-gradient(90deg,#34d399,#fbbf24,#f87171); border-radius:4px; width:100%; transition:width .3s; }
+.guess-count { color:var(--muted,#888); margin-left:4px; }
+.guess-input-row { display:flex; gap:6px; align-items:center; }
+.guess-input-row .ta-add-btn { flex:none; }
+.guess-input-row .tc-input { flex:1; padding:10px 12px; border:1px solid var(--card-border,#ddd); border-radius:10px; background:var(--card-bg,#fff); font-size:16px; text-align:center; width:100px; }
+.guess-input-row input[type=number]::-webkit-inner-spin-button,
+.guess-input-row input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+.guess-input-row input[type=number] { -moz-appearance:textfield; }
+.guess-wrap > .ta-add-btn { width:100%; }
+[data-theme="dark"] .tw-result { background:rgba(255,255,255,.06); }
+[data-theme="dark"] .tw-wheel { border-color:rgba(255,255,255,.2); box-shadow:0 4px 16px rgba(0,0,0,.3); }
+[data-theme="dark"] .tw-center { background:#1c1c1e; border-color:#fff; color:#fff; }
+[data-theme="dark"] .guess-msg.start { background:rgba(59,130,246,.18); color:#93c5fd; }
+[data-theme="dark"] .guess-msg.big { background:rgba(239,68,68,.18); color:#fca5a5; }
+[data-theme="dark"] .guess-msg.small { background:rgba(59,130,246,.18); color:#93c5fd; }
+[data-theme="dark"] .guess-msg.hit { background:rgba(34,197,94,.2); color:#86efac; }
+[data-theme="dark"] .guess-msg.err { background:rgba(245,158,11,.18); color:#fcd34d; }
+[data-theme="dark"] .guess-msg { background:rgba(255,255,255,.06); color:#eee; }
+[data-theme="dark"] .guess-range-track { background:rgba(255,255,255,.12); }
 #page-chatcard { scrollbar-width:none; -ms-overflow-style:none; }
 #page-chatcard::-webkit-scrollbar { display:none; }
 .chat-title { font-size:22px; font-weight:700; padding:4px 2px 8px; letter-spacing:1px; }
@@ -10556,9 +10603,9 @@ color: #CCC;
     <div class="splash-footcard">
       <!-- v3.8.y：底部版本块——两行：名称+版本 / 部署时间+实时秒数（实时秒写入 #splash-ver-live） -->
       <!-- #570：第三行开屏新版检测（ver-check.js 渲染）：检测中 / ✓已是最新 / ⇩有新版本可点更新 -->
-      <div class="splash-ver" id="splash-ver" data-build-ts="1791613161167">
-        <span class="sv-app">Mochi 字卡传讯 <b>v3.26.567</b></span>
-        <span class="sv-deploy">部署于 2026-10-10 14:19<span id="splash-ver-live"></span></span>
+      <div class="splash-ver" id="splash-ver" data-build-ts="1791616350427">
+        <span class="sv-app">Mochi 字卡传讯 <b>v3.26.568</b></span>
+        <span class="sv-deploy">部署于 2026-10-10 15:12<span id="splash-ver-live"></span></span>
         <span class="sv-check" id="splash-ver-check" hidden></span>
       </div>
       <!-- v3.5.120：数据（IndexedDB 回填）加载完成前不显示「点击进入」按钮，
@@ -12038,7 +12085,7 @@ color: #CCC;
         <div class="set-row" id="row-changelog">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 12c0-5.5 3.5-10 10-10 3.7 0 7 2 8.8 5M22 12c0 5.5-3.5 10-10 10-3.7 0-7-2-8.8-5"/></svg></div>
           <div class="txt">版本与更新<span class="sub">当前版本 · 一键更新到最新（更新摘要见开屏公告）</span></div>
-          <div class="val" id="about-ver-val">v3.26.567</div>
+          <div class="val" id="about-ver-val">v3.26.568</div>
           <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
         </div>
         <!-- #606 开源与致谢：开源/私有部署说明 + 灵感来源与致谢（内容与功能介绍页同源，做成独立入口） -->
@@ -12107,7 +12154,7 @@ color: #CCC;
         </div>
       </div>
       </div><!-- /them-sec about -->
-      <div class="ver">Mochi 字卡传讯 v3.26.567</div>
+      <div class="ver">Mochi 字卡传讯 v3.26.568</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       <!-- v3.27.x：设置页底部防骗声明 -->
       <div class="set-alert">
@@ -12501,7 +12548,7 @@ color: #CCC;
             <div class="lic-hero-top">
               <div class="lic-title">Mochi 字卡传讯</div>
               <span class="lic-badge">原版</span>
-              <span class="lic-ver">v3.26.567</span>
+              <span class="lic-ver">v3.26.568</span>
             </div>
             <div class="lic-p">原创极简风情侣字卡传讯，不是小手机：黑白灰简约设计，数据全部保存在本地、无需联网；所有内容均为代码触发、按概率运行，联系方可主动发送聊天消息。代码从零编写并完全开源——本作即原版。</div>
             <!-- v3.26.x #648：原版口径澄清——唯一原版使用网站＋其他版本均为开放二传二改产生的二传/二改版 -->
@@ -15486,6 +15533,81 @@ color: #CCC;
           </div>
         </div>
       </div>
+      <!-- 真心话转盘 -->
+      <div class="poke-card" id="chat-truth-panel" hidden>
+        <div class="poke-card-head">
+          <span>真心话转盘 · <b id="truth-partner-name">TA</b></span>
+          <div class="snake-head-actions">
+            <select class="snake-diff" id="truth-cat">
+              <option value="gentle" selected>温柔</option>
+              <option value="sweet">甜蜜</option>
+              <option value="deep">深度</option>
+              <option value="spicy">刺激</option>
+            </select>
+            <button class="poke-card-close" id="truth-close">✕</button>
+          </div>
+        </div>
+        <div class="poke-card-scroll">
+          <div class="tw-wrap">
+            <div class="tw-pointer" id="truth-pointer">▼ 点转盘开始</div>
+            <div class="tw-wheel-box">
+              <div class="tw-wheel" id="truth-wheel">
+                <div class="tw-inner" id="truth-wheel-inner"></div>
+                <div class="tw-center">❓</div>
+              </div>
+            </div>
+            <div class="tw-result" id="truth-result" hidden>
+              <div class="tr-q">问题：<span class="tr-q-text"></span></div>
+            </div>
+            <div class="tw-answer" id="truth-answer" hidden>
+              <textarea id="truth-answer-input" rows="2" placeholder="说点什么吧~"></textarea>
+              <div class="tw-answer-row">
+                <button class="ta-add-btn" id="truth-answer-btn" type="button">提交回答</button>
+              </div>
+            </div>
+            <div class="tw-footer">
+              <button class="ta-add-btn" id="truth-next-btn" type="button" hidden>再来一题</button>
+              <button class="ta-add-btn tw-end-btn" id="truth-stop-btn" type="button" hidden>结束（梦角说句结束语）</button>
+            </div>
+            <div class="tw-custom">
+              <input type="text" id="truth-add-q-input" class="tc-input" placeholder="给当前档位加一道你的问题~" style="width:60%">
+              <button class="ta-add-btn" id="truth-add-q-confirm" type="button" style="width:36%">添加</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 梦角猜数字 -->
+      <div class="poke-card" id="chat-guess-panel" hidden>
+        <div class="poke-card-head">
+          <span>梦角猜数字 · <b id="guess-partner-name">TA</b></span>
+          <div class="snake-head-actions">
+            <select class="snake-diff" id="guess-range">
+              <option value="50">1-50</option>
+              <option value="100" selected>1-100</option>
+              <option value="200">1-200</option>
+              <option value="500">1-500</option>
+            </select>
+            <button class="poke-card-close" id="guess-close">✕</button>
+          </div>
+        </div>
+        <div class="poke-card-scroll">
+          <div class="guess-wrap">
+            <div class="guess-msg" id="guess-msg">点「开始」让我想一个数字~</div>
+            <div class="guess-range-bar">
+              <span id="guess-low">1</span>
+              <div class="guess-range-track"><div class="guess-range-fill" id="guess-range-fill"></div></div>
+              <span id="guess-high">100</span>
+              <span class="guess-count">猜了 <b id="guess-count">0</b> 次</span>
+            </div>
+            <div class="guess-input-row">
+              <button class="ta-add-btn" id="guess-start" type="button">开始</button>
+              <input type="number" id="guess-input" class="tc-input" min="1" max="100" placeholder="猜一个数字" disabled style="flex:1">
+              <button class="ta-add-btn" id="guess-btn" type="button" disabled>猜！</button>
+            </div>
+            <button class="ta-add-btn" id="guess-replay" type="button" hidden>再来一局</button>
+          </div>
+        </div>
+      </div>
       <!-- 双人打砖块：聊天页底部半框（合作清砖：玩家右挡板 / 梦角左挡板由代码控制，球数 1~3 可设） -->
       <div class="poke-card" id="chat-brick-panel" hidden>
         <div class="poke-card-head">
@@ -16584,6 +16706,14 @@ color: #CCC;
             <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.6 3.4l8.8-2 3.4 3.2-8.8 2z"/><rect x="3.4" y="7" width="15.6" height="13.4" rx="1.8"/><path d="M11.2 11.8l.9 1.9 1.9.9-1.9.9-.9 1.9-.9-1.9-1.9-.9 1.9-.9z"/></svg></span>
             <span>记忆翻牌</span>
           </button>
+          <button class="more-item" id="more-truth" data-mcat="game" title="真心话转盘">
+            <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></span>
+            <span>真心话</span>
+          </button>
+          <button class="more-item" id="more-guess" data-mcat="game" title="梦角猜数字">
+            <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1v1.2h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"/></svg></span>
+            <span>猜数字</span>
+          </button>
           <button class="more-item" id="more-gomoku" data-mcat="game" title="五子棋">
             <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M3.5 9.2h17M3.5 14.8h17M9.2 3.5v17M14.8 3.5v17"/><circle cx="9.2" cy="9.2" r="1.5" fill="currentColor" stroke="none"/><circle cx="14.8" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="9.2" cy="14.8" r="1.5" fill="currentColor" stroke="none"/></svg></span>
             <span>五子棋</span>
@@ -17125,7 +17255,7 @@ color: #CCC;
   // v3.5.123：readonly 起手（防 Chrome 密码弹条破坏表单签名）——这里立即解除，
   // 早于所有功能模块，任何设备都不会出现输入框不可用的情况
   (function () { var _ci = document.getElementById('chat-input'); if (_ci) _ci.readOnly = false; })();
-window.__jsErrors = window.__jsErrors || []; window.__mochiLoaded = window.__mochiLoaded || []; window.__mochiJsFiles = ["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","perf-check.js","img-compress.js","clock.js","tabs.js","desktop-slider.js","quote-cards.js","personalize.js","chat.js","group-chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","qmc-decrypt.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","incoming-requests.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-app.js","memo-arc.js","my-arc.js","period.js","accounting.js","garden.js","room.js","drift-bottle.js","decision.js","group-decision.js","pong.js","snake-game.js","breakout.js","connect-four.js","coop-mine.js","fishing.js","memory-game.js","gomoku.js","linkup.js","match3.js","auction.js","arcade.js","mood-diary.js","sfx.js","fullscreen.js","data-backup.js","feature-data.js","pwa.js","ver-check.js","cjian.js","feature-hub.js","settings-help.js","onboarding.js","page-coach.js","card-audit.js","mobile-adapt.js"]; window.__mochiExtFiles = ["calendar.js","mail.js","memo-app.js","memo-arc.js","my-arc.js","accounting.js","garden.js","room.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","pong.js","snake-game.js","breakout.js","connect-four.js","coop-mine.js","fishing.js","memory-game.js","gomoku.js","linkup.js","match3.js","arcade.js","settings-help.js","onboarding.js","card-audit.js","divination.js","loc-lib.js","ck-question.js","ta-invite.js","gift-shop.js","feed.js","cjian.js","call.js","music-player.js"];
+window.__jsErrors = window.__jsErrors || []; window.__mochiLoaded = window.__mochiLoaded || []; window.__mochiJsFiles = ["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","perf-check.js","img-compress.js","clock.js","tabs.js","desktop-slider.js","quote-cards.js","personalize.js","chat.js","group-chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","qmc-decrypt.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","incoming-requests.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-app.js","memo-arc.js","my-arc.js","period.js","accounting.js","garden.js","room.js","drift-bottle.js","decision.js","group-decision.js","pong.js","snake-game.js","breakout.js","connect-four.js","coop-mine.js","fishing.js","memory-game.js","gomoku.js","linkup.js","match3.js","auction.js","arcade.js","truth-spin.js","guess-number.js","mood-diary.js","sfx.js","fullscreen.js","data-backup.js","feature-data.js","pwa.js","ver-check.js","cjian.js","feature-hub.js","settings-help.js","onboarding.js","page-coach.js","card-audit.js","mobile-adapt.js"]; window.__mochiExtFiles = ["calendar.js","mail.js","memo-app.js","memo-arc.js","my-arc.js","accounting.js","garden.js","room.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","pong.js","snake-game.js","breakout.js","connect-four.js","coop-mine.js","fishing.js","memory-game.js","gomoku.js","linkup.js","match3.js","arcade.js","settings-help.js","onboarding.js","card-audit.js","divination.js","loc-lib.js","ck-question.js","ta-invite.js","gift-shop.js","feed.js","cjian.js","call.js","music-player.js"];
 (function () { try {
 (function () {
 try { window.__jsErrors = window.__jsErrors || []; } catch (e0) {}
@@ -36940,6 +37070,28 @@ appendMsg(m);
 maybeScrollChatBottom(rec.side);
 return m;
 }
+if (rec.special === 'truth' || rec.special === 'truth-reply' || rec.special === 'truth-end') {
+m.className = 'msg-pong';
+const tl = rec.special === 'truth-end' ? '💫 真心话·结束' : rec.special === 'truth-reply' ? '💬 ' + T('TA') + '回应' : '🎡 真心话';
+m.innerHTML = '<div class="msg-pong-card">' +
+'<div class="msg-pong-label">' + tl + '</div>' +
+'<div class="msg-pong-result">' + escTxt(T(rec.text || '')) + '</div>' +
+'</div>';
+appendMsg(m);
+maybeScrollChatBottom(rec.side);
+return m;
+}
+if (rec.special === 'guess-hit' || rec.special === 'guess-end' || rec.special === 'guess-hint') {
+m.className = 'msg-pong';
+const gl = rec.special === 'guess-end' ? '🎯 猜数字·结束' : rec.special === 'guess-hint' ? '🎲 ' + T('TA') + '提示' : '🎯 猜数字';
+m.innerHTML = '<div class="msg-pong-card">' +
+'<div class="msg-pong-label">' + gl + '</div>' +
+'<div class="msg-pong-result">' + escTxt(T(rec.text || '')) + '</div>' +
+'</div>';
+appendMsg(m);
+maybeScrollChatBottom(rec.side);
+return m;
+}
 if (rec.special === 'memory') {
 m.className = 'msg-pong msg-memory';
 m.innerHTML = '<div class="msg-pong-card">' +
@@ -41493,6 +41645,28 @@ var callP = document.getElementById('chat-call-panel'); if (callP) callP.hidden 
 var snkP = document.getElementById('chat-snake-panel'); if (snkP) snkP.hidden = true;
 if (window.closePongPanel) window.closePongPanel();
 if (window.openBrickPanel) window.openBrickPanel();
+});
+}
+var moreTruth = document.getElementById('more-truth');
+if (moreTruth) {
+moreTruth.addEventListener('click', function (e) {
+e.stopPropagation();
+if (morePanel) morePanel.hidden = true;
+var pc = document.getElementById('poke-card'); if (pc) pc.hidden = true;
+if (window.closePongPanel) window.closePongPanel();
+if (window.closeBrickPanel) window.closeBrickPanel();
+if (window.openTruthPanel) window.openTruthPanel();
+});
+}
+var moreGuess = document.getElementById('more-guess');
+if (moreGuess) {
+moreGuess.addEventListener('click', function (e) {
+e.stopPropagation();
+if (morePanel) morePanel.hidden = true;
+var pc = document.getElementById('poke-card'); if (pc) pc.hidden = true;
+if (window.closePongPanel) window.closePongPanel();
+if (window.closeBrickPanel) window.closeBrickPanel();
+if (window.openGuessPanel) window.openGuessPanel();
 });
 }
 window.sendSnakeResult = function (d) {
@@ -73966,6 +74140,431 @@ if (window.__mochiLoaded) window.__mochiLoaded.push("auction.js");
 } catch (__e) { try { console.error("[JS] auction.js", __e && __e.message || __e); } catch (x) {} if (window.__jsErrors) window.__jsErrors.push("[auction.js] " + String(__e && __e.message || __e)); } })();
 (function () { try {
 (function () {
+const panel = document.getElementById('chat-truth-panel');
+if (!panel) return;
+const partnerNameEl = document.getElementById('truth-partner-name');
+const wheelEl = document.getElementById('truth-wheel');
+const wheelInner = document.getElementById('truth-wheel-inner');
+const pointerEl = document.getElementById('truth-pointer');
+const resultEl = document.getElementById('truth-result');
+const answerEl = document.getElementById('truth-answer');
+const answerInput = document.getElementById('truth-answer-input');
+const answerBtn = document.getElementById('truth-answer-btn');
+const nextBtn = document.getElementById('truth-next-btn');
+const stopBtn = document.getElementById('truth-stop-btn');
+const closeBtn = document.getElementById('truth-close');
+const catSel = document.getElementById('truth-cat');
+const addQuestionBtn = document.getElementById('truth-add-q');
+const addQuestionInput = document.getElementById('truth-add-q-input');
+const addQuestionConfirm = document.getElementById('truth-add-q-confirm');
+const T = window.taFit || function (x) { return x; };
+function prefix() { return (window.activePrefix && window.activePrefix()) || 'xy-home-v2'; }
+function escG(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+function toast(msg) {
+let t = document.getElementById('cc-toast');
+if (!t) { t = document.createElement('div'); t.id = 'cc-toast'; document.body.appendChild(t); }
+t.textContent = msg;
+t.className = 'cc-toast'; void t.offsetWidth; t.className = 'cc-toast show';
+clearTimeout(t._timer); t._timer = setTimeout(() => { t.className = 'cc-toast'; }, 2000);
+}
+const PRESETS = {
+gentle: [
+'你第一次见我时心里想的是什么？',
+'你最喜欢我哪一点？',
+'你觉得我最可爱的瞬间是什么时候？',
+'你最想对我说的一句话是什么？',
+'你最想和我一起做什么？',
+'你最想带我去哪个地方？',
+'你最想给我买什么礼物？',
+'你最想为我做一件什么事？'
+],
+sweet: [
+'你说过的哪句话最让我心动？（你自己觉得）',
+'如果给我起一个专属昵称，你会叫我什么？',
+'你最想让我穿什么样的衣服？',
+'你最想和我拍什么样的合照？',
+'你最想收到我送的什么礼物？',
+'你最想让我在你身上留下什么印记？',
+'你最想对我说哪三句话？',
+'你觉得我们最默契的瞬间是什么？'
+],
+deep: [
+'如果明天我消失了，你会做什么？',
+'如果我失忆了，你最想帮我记起哪件事？',
+'你觉得我们的关系最怕什么？',
+'你对我们的未来有什么期待？',
+'如果可以回到过去，你最想和我重来哪一天？',
+'你觉得我最需要改进的地方是什么？',
+'你有什么事一直没告诉我？',
+'如果我们分开了，你会留着我的什么东西？'
+],
+spicy: [
+'你最想对我做什么？',
+'你最想让我对你做什么？',
+'你最想和我在哪个地方独处？',
+'你最想让我穿什么给你看？',
+'你最想让我对你说什么悄悄话？',
+'你最想和我玩什么游戏？',
+'你最想让我怎么叫你？',
+'你最想和我去哪里旅行？'
+]
+};
+const CATS = [
+{ k: 'gentle', name: '温柔', color: '#E8F4FD', text: '#3B82F6' },
+{ k: 'sweet',  name: '甜蜜', color: '#FEF3C7', text: '#D97706' },
+{ k: 'deep',   name: '深度', color: '#EDE9FE', text: '#7C3AED' },
+{ k: 'spicy',  name: '刺激', color: '#FEE2E2', text: '#DC2626' }
+];
+const FOLLOWUPS = {
+gentle: ['真的吗😳', '我也觉得~', '好感动🥺', '继续说~', '我想听更多'],
+sweet:  ['哎呀好害羞💢', '真的假的😳', '那你什么时候带我去~', '我也想~', '再说一遍嘛~'],
+deep:   ['...', '我也是这么想的', '别离开我好吗', '我会一直陪着你的', '我不会让你消失的'],
+spicy:  ['😳', '哼，你好坏💢', '那你敢吗', '我才不要告诉你', '你想什么呢笨蛋']
+};
+const END_POOLS = {
+gentle: ['今天好温柔呀~', '谢谢你愿意告诉我这些', '我也爱你~'],
+sweet:  ['甜死了🥺', '好喜欢你这样', '再来一局嘛~'],
+deep:   ['...我们一起走下去吧', '不会让你一个人的', '我也在'],
+spicy:  ['你真的好大胆💢', '哼，今天就到这！', '再玩我就真害羞了~']
+};
+function customKey(cat) { return prefix() + ':truth-custom:' + cat; }
+function loadCustom(cat) {
+try {
+const a = JSON.parse(localStorage.getItem(customKey(cat)) || '[]');
+return Array.isArray(a) ? a : [];
+} catch (e) { return []; }
+}
+function saveCustom(cat, arr) {
+try { localStorage.setItem(customKey(cat), JSON.stringify(arr)); } catch (e) {}
+}
+let state = { phase: 'idle', currentQ: '', currentCat: '', answered: false, spinDeg: 0 };
+function buildWheelHTML() {
+const cat = CATS.find(c => c.k === (catSel && catSel.value) || 'gentle');
+const catQuestions = [...PRESETS[cat.k], ...loadCustom(cat.k)];
+const N = Math.min(catQuestions.length, 8); // 最多8格
+const degPer = 360 / N;
+let html = '';
+for (let i = 0; i < N; i++) {
+const start = i * degPer - 90; // 从顶部开始
+const end = start + degPer;
+const clip = `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.cos((start * Math.PI) / 180)}% ${50 + 50 * Math.sin((start * Math.PI) / 180)}%, ${50 + 50 * Math.cos((end * Math.PI) / 180)}% ${50 + 50 * Math.sin((end * Math.PI) / 180)}%)`;
+html += '<div class="tw-seg" style="clip-path:' + clip + ';background:' + cat.color + ';border-color:' + cat.text + '"></div>';
+const mid = start + degPer / 2;
+const textDeg = mid + 90;
+html += '<div class="tw-label" style="transform:rotate(' + textDeg + 'deg) translate(0,-62px);color:' + cat.text + '">' + (i + 1) + '</div>';
+}
+return html;
+}
+function rebuildWheel() {
+if (!wheelInner) return;
+wheelInner.innerHTML = buildWheelHTML();
+wheelInner.style.transform = 'rotate(0deg)';
+wheelInner.style.transition = 'none';
+}
+function spin() {
+const cat = CATS.find(c => c.k === (catSel && catSel.value) || 'gentle');
+const catQuestions = [...PRESETS[cat.k], ...loadCustom(cat.k)];
+const N = Math.min(catQuestions.length, 8);
+if (!catQuestions.length) { toast('这一档还没有问题~'); return; }
+const pick = Math.floor(Math.random() * catQuestions.length);
+state.currentQ = catQuestions[pick];
+state.currentCat = cat.k;
+state.answered = false;
+const degPer = 360 / N;
+const segIdx = pick % N;
+const target = segIdx * degPer + degPer / 2;
+const extraTurns = 4 + Math.floor(Math.random() * 3);
+const jitter = (Math.random() - 0.5) * (degPer * 0.6);
+const newDeg = state.spinDeg + 360 * extraTurns + (360 - target) + jitter;
+state.spinDeg = newDeg;
+state.phase = 'spinning';
+wheelInner.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.25, 1)';
+wheelInner.style.transform = 'rotate(' + newDeg + 'deg)';
+if (resultEl) resultEl.hidden = true;
+if (answerEl) answerEl.hidden = true;
+setTimeout(function () {
+state.phase = 'answer';
+if (resultEl) {
+resultEl.hidden = false;
+resultEl.querySelector('.tr-q-text').textContent = state.currentQ;
+}
+if (answerEl) answerEl.hidden = false;
+if (answerInput) { answerInput.value = ''; answerInput.focus(); }
+}, 4200);
+}
+function submitAnswer() {
+const ans = answerInput ? String(answerInput.value || '').trim() : '';
+if (!ans) { toast('说点什么嘛~'); return; }
+state.answered = true;
+if (answerBtn) answerBtn.disabled = true;
+if (answerInput) { answerInput.disabled = true; answerInput.blur(); }
+const cat = CATS.find(c => c.k === state.currentCat) || CATS[0];
+const pool = FOLLOWUPS[cat.k] || FOLLOWUPS.gentle;
+const follow = pool[Math.floor(Math.random() * pool.length)];
+const name = (window.activeStore && window.activeStore() && window.activeStore().get('lbl-partner')) || 'TA';
+try {
+if (window.addRec) {
+window.addRec({
+side: 'out', text: '真心话 · ' + cat.name + '档\nQ：' + state.currentQ + '\nA：' + ans,
+special: 'truth', nightAllow: true
+});
+setTimeout(function () {
+window.addRec({
+side: 'in', text: follow, special: 'truth-reply', nightAllow: true
+});
+}, 1200);
+}
+} catch (e) {}
+toast(name + '回应：' + follow);
+if (nextBtn) nextBtn.hidden = false;
+if (stopBtn) stopBtn.hidden = false;
+if (answerEl) answerEl.hidden = true;
+}
+function nextRound() {
+state.phase = 'idle';
+state.currentQ = '';
+state.answered = false;
+if (resultEl) resultEl.hidden = true;
+if (nextBtn) nextBtn.hidden = true;
+if (stopBtn) stopBtn.hidden = true;
+if (answerBtn) answerBtn.disabled = false;
+if (answerInput) { answerInput.disabled = false; answerInput.value = ''; }
+}
+function endGame() {
+const cat = CATS.find(c => c.k === state.currentCat) || CATS[0];
+const pool = END_POOLS[cat.k] || END_POOLS.gentle;
+const endMsg = pool[Math.floor(Math.random() * pool.length)];
+try {
+if (window.addRec) {
+window.addRec({ side: 'in', text: endMsg, special: 'truth-end', nightAllow: true });
+}
+} catch (e) {}
+toast('结束啦~ ' + endMsg);
+nextRound();
+}
+function addCustomQuestion() {
+const cat = CATS.find(c => c.k === (catSel && catSel.value) || 'gentle');
+const inp = addQuestionInput;
+if (!inp) return;
+const q = String(inp.value || '').trim();
+if (!q) { toast('写个问题先~'); return; }
+const list = loadCustom(cat.k);
+list.push(q);
+saveCustom(cat.k, list);
+toast('已加到「' + cat.name + '」档');
+inp.value = '';
+rebuildWheel();
+}
+function openPanel() {
+if (!panel) return;
+panel.hidden = false;
+state.phase = 'idle';
+state.spinDeg = 0;
+rebuildWheel();
+try {
+const s = window.activeStore && window.activeStore();
+const name = (s && (s.get('lbl-partner') || s.get('cs-lbl-partner'))) || 'TA';
+if (partnerNameEl) partnerNameEl.textContent = name;
+} catch (e) {}
+if (resultEl) resultEl.hidden = true;
+if (answerEl) answerEl.hidden = true;
+if (nextBtn) nextBtn.hidden = true;
+if (stopBtn) stopBtn.hidden = true;
+if (answerBtn) answerBtn.disabled = false;
+if (answerInput) { answerInput.disabled = false; answerInput.value = ''; }
+}
+function closePanel() { if (panel) panel.hidden = true; }
+window.openTruthPanel = openPanel;
+window.closeTruthPanel = closePanel;
+if (pointerEl) pointerEl.addEventListener('click', spin);
+if (answerBtn) answerBtn.addEventListener('click', submitAnswer);
+if (answerInput) answerInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submitAnswer(); } });
+if (nextBtn) nextBtn.addEventListener('click', nextRound);
+if (stopBtn) stopBtn.addEventListener('click', endGame);
+if (closeBtn) closeBtn.addEventListener('click', closePanel);
+if (catSel) catSel.addEventListener('change', function () {
+state.spinDeg = 0;
+rebuildWheel();
+if (resultEl) resultEl.hidden = true;
+if (answerEl) answerEl.hidden = true;
+if (nextBtn) nextBtn.hidden = true;
+if (stopBtn) stopBtn.hidden = true;
+});
+if (addQuestionConfirm) addQuestionConfirm.addEventListener('click', addCustomQuestion);
+document.addEventListener('click', function (e) {
+if (e.target === pointerEl || e.target === wheelInner || (wheelInner && wheelInner.contains(e.target))) return;
+});
+})();
+if (window.__mochiLoaded) window.__mochiLoaded.push("truth-spin.js");
+} catch (__e) { try { console.error("[JS] truth-spin.js", __e && __e.message || __e); } catch (x) {} if (window.__jsErrors) window.__jsErrors.push("[truth-spin.js] " + String(__e && __e.message || __e)); } })();
+(function () { try {
+(function () {
+const panel = document.getElementById('chat-guess-panel');
+if (!panel) return;
+const partnerNameEl = document.getElementById('guess-partner-name');
+const rangeSel = document.getElementById('guess-range');
+const startBtn = document.getElementById('guess-start');
+const inputEl = document.getElementById('guess-input');
+const guessBtn = document.getElementById('guess-btn');
+const msgEl = document.getElementById('guess-msg');
+const countEl = document.getElementById('guess-count');
+const lowEl = document.getElementById('guess-low');
+const highEl = document.getElementById('guess-high');
+const closeBtn = document.getElementById('guess-close');
+const replayBtn = document.getElementById('guess-replay');
+const T = window.taFit || function (x) { return x; };
+const TA_REPLIES = {
+tooBig: [
+'太大啦😤 往小了猜',
+'大了大了~',
+'这都超了好嘛',
+'笨蛋，小一点',
+'太大啦，再猜猜~'
+],
+tooSmall: [
+'太小了🥺 往大了猜',
+'小了小了~',
+'这也太小了吧',
+'再大一点嘛',
+'太小啦，加加油~'
+],
+hit: [
+'猜对啦！🎉 好厉害！',
+'就是这个！你怎么猜到的😳',
+'哇！猜对了！奖励你一个抱抱~',
+'好聪明！猜对了嘛~',
+'天哪真被你猜中了💢'
+],
+giveUp: [
+'好吧好吧告诉你，是 {num}~',
+'认输认输，其实是 {num}',
+'我直接说吧：{num}！',
+'太难啦，是 {num} 啦'
+]
+};
+const END_POOLS = {
+lucky: [
+'你好准呀，是不是偷看了😳',
+'猜得好厉害~',
+'再来一局嘛~'
+],
+normal: [
+'还不错哦~',
+'继续加油！',
+'下次能更少猜吗~'
+]
+};
+let state = { target: 0, range: 100, count: 0, min: 1, max: 100, playing: false, found: false };
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function setMsg(text, cssClass) {
+if (!msgEl) return;
+msgEl.textContent = text;
+msgEl.className = 'guess-msg' + (cssClass ? ' ' + cssClass : '');
+}
+function updateRange() {
+if (lowEl) lowEl.textContent = state.min;
+if (highEl) highEl.textContent = state.max;
+if (countEl) countEl.textContent = state.count;
+}
+function startGame() {
+const range = parseInt(rangeSel && rangeSel.value, 10) || 100;
+state.range = range;
+state.target = 1 + Math.floor(Math.random() * range);
+state.count = 0;
+state.min = 1;
+state.max = range;
+state.playing = true;
+state.found = false;
+setMsg(pick([
+'我心里想了一个 1-' + range + ' 的数字，你猜~',
+'好啦！我想好了，猜猜看是多少~',
+'来吧！1 到 ' + range + ' 之间，猜到算你厉害~',
+'想好了想好了，快来猜！'
+]), 'start');
+updateRange();
+if (inputEl) { inputEl.value = ''; inputEl.disabled = false; inputEl.focus(); }
+if (guessBtn) guessBtn.disabled = false;
+if (replayBtn) replayBtn.hidden = true;
+}
+function submitGuess() {
+if (!state.playing) return;
+const raw = inputEl ? String(inputEl.value || '').trim() : '';
+const n = parseInt(raw, 10);
+if (!n || n < 1 || n > state.range) { setMsg('1 到 ' + state.range + ' 之间的整数哦~', 'err'); return; }
+if (n < state.min || n > state.max) { setMsg('刚才已经排除过 ' + n + ' 啦😤', 'err'); return; }
+state.count++;
+updateRange();
+let reply = '';
+if (n === state.target) {
+reply = pick(TA_REPLIES.hit);
+state.playing = false;
+state.found = true;
+setMsg('🎉 ' + reply + '（共猜了 ' + state.count + ' 次）', 'hit');
+try {
+if (window.addRec) {
+window.addRec({
+side: 'in', text: '🎉 猜对啦！答案是 ' + state.target + '（你猜了 ' + state.count + ' 次）',
+special: 'guess-hit', nightAllow: true
+});
+const endPool = state.count <= Math.ceil(Math.log2(state.range) + 1) ? END_POOLS.lucky : END_POOLS.normal;
+setTimeout(function () {
+window.addRec({ side: 'in', text: pick(endPool), special: 'guess-end', nightAllow: true });
+}, 1500);
+}
+} catch (e) {}
+if (replayBtn) replayBtn.hidden = false;
+if (inputEl) inputEl.disabled = true;
+if (guessBtn) guessBtn.disabled = true;
+} else if (n > state.target) {
+state.max = n - 1;
+reply = pick(TA_REPLIES.tooBig);
+setMsg('⬇️ ' + reply, 'big');
+try { if (window.addRec) window.addRec({ side: 'in', text: '⬇️ ' + reply, special: 'guess-hint', nightAllow: true }); } catch (e) {}
+updateRange();
+if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+} else {
+state.min = n + 1;
+reply = pick(TA_REPLIES.tooSmall);
+setMsg('⬆️ ' + reply, 'small');
+try { if (window.addRec) window.addRec({ side: 'in', text: '⬆️ ' + reply, special: 'guess-hint', nightAllow: true }); } catch (e) {}
+updateRange();
+if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+}
+}
+function openPanel() {
+if (!panel) return;
+panel.hidden = false;
+state.playing = false;
+state.found = false;
+state.count = 0;
+const range = parseInt(rangeSel && rangeSel.value, 10) || 100;
+state.range = range;
+state.min = 1;
+state.max = range;
+setMsg('点「开始」让我想一个数字~', 'start');
+updateRange();
+if (inputEl) { inputEl.value = ''; inputEl.disabled = true; }
+if (guessBtn) guessBtn.disabled = true;
+if (replayBtn) replayBtn.hidden = true;
+try {
+const s = window.activeStore && window.activeStore();
+const name = (s && (s.get('lbl-partner') || s.get('cs-lbl-partner'))) || 'TA';
+if (partnerNameEl) partnerNameEl.textContent = name;
+} catch (e) {}
+}
+function closePanel() { if (panel) panel.hidden = true; }
+window.openGuessPanel = openPanel;
+window.closeGuessPanel = closePanel;
+if (startBtn) startBtn.addEventListener('click', startGame);
+if (guessBtn) guessBtn.addEventListener('click', submitGuess);
+if (inputEl) inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submitGuess(); } });
+if (closeBtn) closeBtn.addEventListener('click', closePanel);
+if (replayBtn) replayBtn.addEventListener('click', startGame);
+})();
+if (window.__mochiLoaded) window.__mochiLoaded.push("guess-number.js");
+} catch (__e) { try { console.error("[JS] guess-number.js", __e && __e.message || __e); } catch (x) {} if (window.__jsErrors) window.__jsErrors.push("[guess-number.js] " + String(__e && __e.message || __e)); } })();
+(function () { try {
+(function () {
 const rawStore = window.activeStore();
 const gStore = window.xyStore('xy-home-v2');
 function sfxUnified() { try { return gStore.get('sfx-unified') === '1'; } catch (e) { return false; } }
@@ -80500,4 +81099,4 @@ if (window.__mochiLoaded) window.__mochiLoaded.push("mobile-adapt.js");
 </body>
 </html>
 
-<!-- __MOCHI_EOF__ mv207umn -->
+<!-- __MOCHI_EOF__ mv2247h7 -->

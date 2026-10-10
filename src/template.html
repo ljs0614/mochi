@@ -5198,6 +5198,81 @@
           </div>
         </div>
       </div>
+      <!-- 真心话转盘 -->
+      <div class="poke-card" id="chat-truth-panel" hidden>
+        <div class="poke-card-head">
+          <span>真心话转盘 · <b id="truth-partner-name">TA</b></span>
+          <div class="snake-head-actions">
+            <select class="snake-diff" id="truth-cat">
+              <option value="gentle" selected>温柔</option>
+              <option value="sweet">甜蜜</option>
+              <option value="deep">深度</option>
+              <option value="spicy">刺激</option>
+            </select>
+            <button class="poke-card-close" id="truth-close">✕</button>
+          </div>
+        </div>
+        <div class="poke-card-scroll">
+          <div class="tw-wrap">
+            <div class="tw-pointer" id="truth-pointer">▼ 点转盘开始</div>
+            <div class="tw-wheel-box">
+              <div class="tw-wheel" id="truth-wheel">
+                <div class="tw-inner" id="truth-wheel-inner"></div>
+                <div class="tw-center">❓</div>
+              </div>
+            </div>
+            <div class="tw-result" id="truth-result" hidden>
+              <div class="tr-q">问题：<span class="tr-q-text"></span></div>
+            </div>
+            <div class="tw-answer" id="truth-answer" hidden>
+              <textarea id="truth-answer-input" rows="2" placeholder="说点什么吧~"></textarea>
+              <div class="tw-answer-row">
+                <button class="ta-add-btn" id="truth-answer-btn" type="button">提交回答</button>
+              </div>
+            </div>
+            <div class="tw-footer">
+              <button class="ta-add-btn" id="truth-next-btn" type="button" hidden>再来一题</button>
+              <button class="ta-add-btn tw-end-btn" id="truth-stop-btn" type="button" hidden>结束（梦角说句结束语）</button>
+            </div>
+            <div class="tw-custom">
+              <input type="text" id="truth-add-q-input" class="tc-input" placeholder="给当前档位加一道你的问题~" style="width:60%">
+              <button class="ta-add-btn" id="truth-add-q-confirm" type="button" style="width:36%">添加</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 梦角猜数字 -->
+      <div class="poke-card" id="chat-guess-panel" hidden>
+        <div class="poke-card-head">
+          <span>梦角猜数字 · <b id="guess-partner-name">TA</b></span>
+          <div class="snake-head-actions">
+            <select class="snake-diff" id="guess-range">
+              <option value="50">1-50</option>
+              <option value="100" selected>1-100</option>
+              <option value="200">1-200</option>
+              <option value="500">1-500</option>
+            </select>
+            <button class="poke-card-close" id="guess-close">✕</button>
+          </div>
+        </div>
+        <div class="poke-card-scroll">
+          <div class="guess-wrap">
+            <div class="guess-msg" id="guess-msg">点「开始」让我想一个数字~</div>
+            <div class="guess-range-bar">
+              <span id="guess-low">1</span>
+              <div class="guess-range-track"><div class="guess-range-fill" id="guess-range-fill"></div></div>
+              <span id="guess-high">100</span>
+              <span class="guess-count">猜了 <b id="guess-count">0</b> 次</span>
+            </div>
+            <div class="guess-input-row">
+              <button class="ta-add-btn" id="guess-start" type="button">开始</button>
+              <input type="number" id="guess-input" class="tc-input" min="1" max="100" placeholder="猜一个数字" disabled style="flex:1">
+              <button class="ta-add-btn" id="guess-btn" type="button" disabled>猜！</button>
+            </div>
+            <button class="ta-add-btn" id="guess-replay" type="button" hidden>再来一局</button>
+          </div>
+        </div>
+      </div>
       <!-- 双人打砖块：聊天页底部半框（合作清砖：玩家右挡板 / 梦角左挡板由代码控制，球数 1~3 可设） -->
       <div class="poke-card" id="chat-brick-panel" hidden>
         <div class="poke-card-head">
@@ -6295,6 +6370,14 @@
           <button class="more-item" id="more-memory" data-mcat="game" title="记忆翻牌（和TA合作）">
             <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.6 3.4l8.8-2 3.4 3.2-8.8 2z"/><rect x="3.4" y="7" width="15.6" height="13.4" rx="1.8"/><path d="M11.2 11.8l.9 1.9 1.9.9-1.9.9-.9 1.9-.9-1.9-1.9-.9 1.9-.9z"/></svg></span>
             <span>记忆翻牌</span>
+          </button>
+          <button class="more-item" id="more-truth" data-mcat="game" title="真心话转盘">
+            <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></span>
+            <span>真心话</span>
+          </button>
+          <button class="more-item" id="more-guess" data-mcat="game" title="梦角猜数字">
+            <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1v1.2h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"/></svg></span>
+            <span>猜数字</span>
           </button>
           <button class="more-item" id="more-gomoku" data-mcat="game" title="五子棋">
             <span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M3.5 9.2h17M3.5 14.8h17M9.2 3.5v17M14.8 3.5v17"/><circle cx="9.2" cy="9.2" r="1.5" fill="currentColor" stroke="none"/><circle cx="14.8" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="9.2" cy="14.8" r="1.5" fill="currentColor" stroke="none"/></svg></span>

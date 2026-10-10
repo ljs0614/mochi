@@ -4492,6 +4492,30 @@ appendMsg(m);
 maybeScrollChatBottom(rec.side);
 return m;
 }
+// 真心话转盘消息渲染
+if (rec.special === 'truth' || rec.special === 'truth-reply' || rec.special === 'truth-end') {
+m.className = 'msg-pong';
+const tl = rec.special === 'truth-end' ? '💫 真心话·结束' : rec.special === 'truth-reply' ? '💬 ' + T('TA') + '回应' : '🎡 真心话';
+m.innerHTML = '<div class="msg-pong-card">' +
+'<div class="msg-pong-label">' + tl + '</div>' +
+'<div class="msg-pong-result">' + escTxt(T(rec.text || '')) + '</div>' +
+'</div>';
+appendMsg(m);
+maybeScrollChatBottom(rec.side);
+return m;
+}
+// 猜数字消息渲染
+if (rec.special === 'guess-hit' || rec.special === 'guess-end' || rec.special === 'guess-hint') {
+m.className = 'msg-pong';
+const gl = rec.special === 'guess-end' ? '🎯 猜数字·结束' : rec.special === 'guess-hint' ? '🎲 ' + T('TA') + '提示' : '🎯 猜数字';
+m.innerHTML = '<div class="msg-pong-card">' +
+'<div class="msg-pong-label">' + gl + '</div>' +
+'<div class="msg-pong-result">' + escTxt(T(rec.text || '')) + '</div>' +
+'</div>';
+appendMsg(m);
+maybeScrollChatBottom(rec.side);
+return m;
+}
 // v3.16.x：记忆翻牌结算卡片（memory-game.js endGame 调用 chatAddSystem special:'memory'）
 if (rec.special === 'memory') {
 m.className = 'msg-pong msg-memory';
@@ -9665,6 +9689,30 @@ if (moreBrick) {
     var snkP = document.getElementById('chat-snake-panel'); if (snkP) snkP.hidden = true;
     if (window.closePongPanel) window.closePongPanel();
     if (window.openBrickPanel) window.openBrickPanel();
+  });
+}
+// 真心话转盘入口
+var moreTruth = document.getElementById('more-truth');
+if (moreTruth) {
+  moreTruth.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (morePanel) morePanel.hidden = true;
+    var pc = document.getElementById('poke-card'); if (pc) pc.hidden = true;
+    if (window.closePongPanel) window.closePongPanel();
+    if (window.closeBrickPanel) window.closeBrickPanel();
+    if (window.openTruthPanel) window.openTruthPanel();
+  });
+}
+// 梦角猜数字入口
+var moreGuess = document.getElementById('more-guess');
+if (moreGuess) {
+  moreGuess.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (morePanel) morePanel.hidden = true;
+    var pc = document.getElementById('poke-card'); if (pc) pc.hidden = true;
+    if (window.closePongPanel) window.closePongPanel();
+    if (window.closeBrickPanel) window.closeBrickPanel();
+    if (window.openGuessPanel) window.openGuessPanel();
   });
 }
 window.sendSnakeResult = function (d) {
