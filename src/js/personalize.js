@@ -4472,9 +4472,13 @@ try {
   const CHAT_STYLE_KEY = 'xy-home-v2:chat-style';
   const getChatStyle = () => { try { return localStorage.getItem(CHAT_STYLE_KEY) === 'wechat' ? 'wechat' : 'default'; } catch (e) { return 'default'; } };
   const applyChatStyle = (mode) => {
-    try { localStorage.setItem(CHAT_STYLE_KEY, mode === 'wechat' ? 'wechat' : 'default'); } catch (e) {}
+    try { if (window.__plog) window.__plog('applyChatStyle-enter', { mode: mode }); } catch (eP) {}
+    try { localStorage.setItem(CHAT_STYLE_KEY, mode === 'wechat' ? 'wechat' : 'default'); } catch (e) {
+      try { if (window.__plog) window.__plog('applyChatStyle-setItem-throw', { msg: String(e && e.message || e) }); } catch (eP2) {}
+    }
     if (mode === 'wechat') document.documentElement.setAttribute('data-chat-style', 'wechat');
     else document.documentElement.removeAttribute('data-chat-style');
+    try { if (window.__plog) window.__plog('applyChatStyle-after', { mode: mode, stored: localStorage.getItem(CHAT_STYLE_KEY), attr: document.documentElement.getAttribute('data-chat-style') }); } catch (eP) {}
     try { toast(mode === 'wechat' ? '已切换为微信聊天风格' : '已恢复默认聊天风格'); } catch (e) {}
   };
   // 暴露到 window，也支持 console 手动切换 / 美化导入导出
@@ -4492,12 +4496,117 @@ try {
       if (chatStyleVal) chatStyleVal.textContent = (getChatStyle() === 'wechat') ? '微信风格' : '默认';
     };
     refreshChatStyleVal();
+    // ===== TEMP 手机端切换故障埋点（仅 ?phonelog=1 时启用，定位后整体移除） =====
+    var __plogOn = false;
+    try { __plogOn = /[?&]phonelog=1/.test(location.search); } catch (eL) {}
+    if (__plogOn) {
+      (function () {
+        var seq = 0;
+        function curState() {
+          var s = {};
+          try {
+            s.stored = localStorage.getItem(CHAT_STYLE_KEY);
+            s.attr = document.documentElement.getAttribute('data-chat-style');
+            var m = document.getElementById('modal-mask');
+            s.maskHidden = m ? m.hidden : null;
+            var pills = document.querySelectorAll('#modal-mask .pill');
+            s.pills = Array.prototype.map.call(pills, function (p) {
+              return { txt: p.textContent.trim(), on: p.className.indexOf('on') >= 0,
+                       rect: (function (r) { return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }; })(p.getBoundingClientRect()) };
+            });
+            s.vv = window.visualViewport ? { w: Math.round(visualViewport.width), h: Math.round(visualViewport.height), scale: visualViewport.scale } : null;
+            s.inner = { w: window.innerWidth, h: window.innerHeight };
+          } catch (e) { s.err = String(e && e.message || e); }
+          return s;
+        }
+        function plog(ev, data) {
+          try {
+            var payload = JSON.stringify(Object.assign({ ev: ev, t: Date.now(), seq: ++seq }, curState(), data || {}));
+            try {
+              if (navigator.sendBeacon) navigator.sendBeacon('/log', new Blob([payload], { type: 'text/plain' }));
+              else { var i = new Image(); i.src = '/log.gif?d=' + encodeURIComponent(payload); }
+            } catch (eN) { var i2 = new Image(); i2.src = '/log.gif?d=' + encodeURIComponent(payload); }
+            try {
+              var box = document.getElementById('phonelog-box');
+              if (!box) {
+                box = document.createElement('div');
+                box.id = 'phonelog-box';
+                box.style.cssText = 'position:fixed;left:4px;top:4px;right:4px;max-height:38vh;overflow:auto;z-index:999999;background:rgba(0,0,0,.82);color:#7CFC00;font:10px/1.45 monospace;padding:4px;white-space:pre-wrap;word-break:break-all;pointer-events:none';
+                document.body.appendChild(box);
+              }
+              var line = document.createElement('div');
+              line.textContent = payload;
+              box.appendChild(line);
+              box.scrollTop = box.scrollHeight;
+            } catch (eO) {}
+          } catch (e) {}
+        }
+        window.__plog = plog;
+        plog('boot', { ua: navigator.userAgent, dpr: window.devicePixelRatio });
+        window.addEventListener('error', function (e) { plog('window-error', { msg: String(e.message), src: String(e.filename) + ':' + e.lineno + ':' + e.colno }); });
+        window.addEventListener('unhandledrejection', function (e) { plog('unhandledrejection', { msg: String(e.reason && e.reason.message || e.reason) }); });
+        // 包裹 openModal：记录每次弹窗标题/参数，以及弹窗存活期间的点选
+        if (typeof window.openModal === 'function') {
+          var __om = window.openModal;
+          window.openModal = function (t, v, fn, opts) {
+            plog('openModal-enter', { title: String(t), pillSubmit: !!(opts && opts.pillSubmit), noInput: !!(opts && opts.noInput), pill: opts ? opts.pill : null });
+            var wrappedFn = fn;
+            if (typeof fn === 'function') {
+              wrappedFn = function (val) {
+                plog('openModal-cb', { title: String(t), val: val });
+                try { return fn.apply(this, arguments); } finally {
+                  setTimeout(function () { plog('openModal-cb-after', { title: String(t) }); }, 60);
+                  setTimeout(function () { plog('openModal-cb-after-300', { title: String(t) }); }, 320);
+                }
+              };
+            }
+            var ctl;
+            try { ctl = __om.call(this, t, v, wrappedFn, opts); } catch (e) { plog('openModal-throw', { msg: String(e && e.message || e), stack: String(e && e.stack || '').slice(0, 300) }); throw e; }
+            setTimeout(function () { plog('openModal-dom-60', { title: String(t) }); }, 60);
+            return ctl;
+          };
+        } else {
+          plog('openModal-missing-at-init', {});
+        }
+        // 弹窗内任意点击（捕获）：记录点中的是不是 pill / 确定按钮 / 遮罩
+        document.addEventListener('click', function (e) {
+          var m = document.getElementById('modal-mask');
+          if (!m || m.hidden) return;
+          var pill = e.target && e.target.closest ? e.target.closest('.pill') : null;
+          var isOk = e.target && e.target.closest ? !!e.target.closest('#modal-ok') : false;
+          var isMask = e.target === m;
+          plog('modal-click', {
+            tag: e.target ? (e.target.id || (typeof e.target.className === 'string' ? e.target.className : '') || e.target.tagName) : '?',
+            pill: pill ? pill.textContent.trim() : null,
+            isOk: isOk, isMask: isMask
+          });
+        }, true);
+        // 设置行触摸链路：touchstart/touchend/click 全记 + elementFromPoint 看谁挡触摸
+        if (chatStyleRow) {
+          ['touchstart', 'touchend', 'click'].forEach(function (tn) {
+            chatStyleRow.addEventListener(tn, function (e) {
+              var p = null;
+              try {
+                var src = e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e);
+                if (src && typeof src.clientX === 'number') {
+                  var el = document.elementFromPoint(src.clientX, src.clientY);
+                  p = el ? (el.id || (typeof el.className === 'string' ? el.className : '') || el.tagName) : null;
+                }
+              } catch (eF) {}
+              plog('row-' + tn, { target: e.target ? (e.target.id || (typeof e.target.className === 'string' ? e.target.className : '') || e.target.tagName) : '?', topAtPoint: p });
+            }, true);
+          });
+        }
+      })();
+    }
     if (chatStyleRow) {
       chatStyleRow.addEventListener('click', () => {
+        try { if (window.__plog) window.__plog('row-handler-fire', { getStyle: getChatStyle(), hasOpenModal: typeof window.openModal === 'function' }); } catch (eP) {}
         if (!window.openModal) { applyChatStyle(getChatStyle() === 'wechat' ? 'default' : 'wechat'); refreshChatStyleVal(); return; }
         const cur = getChatStyle();
         const ctl = window.openModal('聊天风格', '', (v) => {
-          if (v !== 'default' && v !== 'wechat') return;
+          try { if (window.__plog) window.__plog('chatstyle-cb', { v: v }); } catch (eP) {}
+          if (v !== 'default' && v !== 'wechat') { try { if (window.__plog) window.__plog('chatstyle-cb-IGNORED', { v: v }); } catch (eP2) {} return; }
           applyChatStyle(v);
           refreshChatStyleVal();
         }, { noInput: true, pillSubmit: true, pill: cur, pills: CHAT_STYLE_PILLS, staticText: '切换聊天界面的气泡样式与配色，不影响聊天功能本身' });

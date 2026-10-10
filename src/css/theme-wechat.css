@@ -12,7 +12,7 @@
   background: #EDEDED !important;
 }
 [data-chat-style="wechat"] .chat-body {
-  background: #EDEDED !important;
+  background: transparent !important;
   padding: 10px 12px;
   gap: 12px;
 }
@@ -248,9 +248,11 @@
 [data-chat-style="wechat"][data-theme="dark"] .msg-out .msg-bubble::before {
   border-left-color: #95EC69;
 }
-[data-chat-style="wechat"][data-theme="dark"] #page-chat,
-[data-chat-style="wechat"][data-theme="dark"] .chat-body {
+[data-chat-style="wechat"][data-theme="dark"] #page-chat {
   background: #1C1C1E !important;
+}
+[data-chat-style="wechat"][data-theme="dark"] .chat-body {
+  background: transparent !important;
 }
 [data-chat-style="wechat"][data-theme="dark"] .chat-head,
 [data-chat-style="wechat"][data-theme="dark"] .page.full .chat-head {

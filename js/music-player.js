@@ -934,7 +934,7 @@ if (!window.openTCPanel) { localPlId = 'default'; }
 window.openTCPanel('添加本地音乐', '' +
 '<div class="sm-form">' +
 '<div class="sm-fld"><label>上传到播放列表</label><select class="tc-input" id="sm-local-pl">' + targetPlOptions() + '</select></div>' +
-'<div class="sm-fld-hint">选择一首或多首本地音频（mp3 / m4a / aac / ogg / wav / flac）存放进上面的歌单；选「新建歌单」可先建一个歌单再上传。<br>整首音乐已经存在手机里（自己转换 / 无版权保护的下载 / 录音等）时用这里；如果歌还在别的 App 里（QQ音乐 / 酷狗 / B站 等），App 的「分享」链接不能直接导入。<br><b>⚠ 文件必须是不加密的标准音频：</b>音乐 App 里下载 / 缓存的歌曲文件大多带了加密，即使扩展名是 .mp3 / .flac / .m4a 也放不出声；无损 .m4a（ALAC 编码）部分浏览器也不支持。上传后点一下播放试试，放不出来的建议转成 <b>mp3</b>（兼容性最好）再上传。</div>' +
+'<div class="sm-fld-hint">选择一首或多首本地音频（mp3 / m4a / aac / ogg / wav / flac）存放进上面的歌单；选「新建歌单」可先建一个歌单再上传。<br>整首音乐已经存在手机里（自己转换 / 无版权保护的下载 / 录音等）时用这里；如果歌还在别的 App 里（QQ音乐 / 酷狗 / B站 等），App 的「分享」链接不能直接导入。<br><b>🔓 QQ音乐加密文件可自动转换：</b>从 QQ音乐下载/缓存的 <b>.mgg / .mggl / .mflac / .qmc0 / .qmc3 / .qmcflac</b> 等文件，选择后会在你的设备上自动解密并转换成 <b>mp3</b>（全程本机运算，文件不会上传到任何服务器；新版 QQ音乐部分文件密钥不随文件保存，这类会提示转换失败）。网易云 .ncm、酷狗 .kgm 等其他平台加密暂不支持。<br><b>⚠ 其余加密文件：</b>扩展名是 .mp3 / .flac / .m4a 但实际被其他方式加密的文件仍放不出声；无损 .m4a（ALAC 编码）部分浏览器也不支持。上传后点一下播放试试，放不出来的建议转成 <b>mp3</b>（兼容性最好）再上传。</div>' +
 '</div>' +
 '<div class="mail-actions"><button class="cc-tool" id="sm-local-cancel">取消</button><button class="cc-tool" id="sm-local-ok">选择文件上传</button></div>');
 document.getElementById('sm-local-cancel').addEventListener('click', () => { document.getElementById('tc-mask').hidden = true; });
@@ -943,7 +943,7 @@ resolveTargetPlSel('sm-local-pl', (pid) => {
 localPlId = pid || 'default';
 document.getElementById('tc-mask').hidden = true;
 window.mochiFilePick({
-id: 'mochi-music-local-pick', accept: 'audio/*,.mp3,.m4a,.aac,.ogg,.wav,.flac', multiple: true,
+id: 'mochi-music-local-pick', accept: 'audio/*,.mp3,.m4a,.aac,.ogg,.wav,.flac,.mgg,.mggl,.mflac,.qmc0,.qmc3,.qmc2,.qmcflac,.qmcogg,.qmc,.tkm', multiple: true,
 onFiles: (files) => {
 if (!files.length) { toast('没有取到音频文件，请再选一次'); return; }
 uploadFiles(files);
@@ -973,16 +973,169 @@ return { mp3: 'audio/mpeg', m4a: 'audio/mp4', m4b: 'audio/mp4', aac: 'audio/aac'
 function localFileMime(file, buf) {
 return sniffAudioMime(buf) || file.type || mimeFromName(file.name) || 'audio/mpeg';
 }
+var _lameWaiters = null;
+function ensureLamejs(cb) {
+if (window.lamejs && window.lamejs.Mp3Encoder) { cb(true); return; }
+if (_lameWaiters) { _lameWaiters.push(cb); return; }
+_lameWaiters = [cb];
+var s = document.createElement('script');
+s.src = 'js/lame.min.js';
+s.async = true;
+var finished = false;
+var finish = function (ok) {
+if (finished) return;
+finished = true;
+var w = _lameWaiters; _lameWaiters = null;
+for (var i = 0; i < w.length; i++) { try { w[i](ok); } catch (e) {} }
+};
+s.onload = function () { finish(!!(window.lamejs && window.lamejs.Mp3Encoder)); };
+s.onerror = function () { finish(false); };
+document.head.appendChild(s);
+}
+function makeBlobFile(parts, name, mime) {
+var blob = parts instanceof Blob ? parts : new Blob(parts, { type: mime });
+try { return new File([blob], name, { type: mime }); }
+catch (e) {
+try { Object.defineProperty(blob, 'name', { value: name, configurable: true }); }
+catch (e2) { blob.name = name; }
+return blob;
+}
+}
+function qmcAudioDecode(ab, cb) {
+var AC = window.AudioContext || window.webkitAudioContext;
+if (!AC) { cb(null); return; }
+var ac = null;
+try { ac = new AC(); } catch (e) { cb(null); return; }
+var settled = false;
+try {
+ac.decodeAudioData(ab, function (buf) {
+if (settled) return; settled = true;
+if (!buf) { try { ac.close(); } catch (e) {} cb(null); return; }
+cb({ ac: ac, buf: buf });
+}, function () {
+if (settled) return; settled = true;
+try { ac.close(); } catch (e) {}
+cb(null);
+});
+} catch (e) { try { ac.close(); } catch (e2) {} cb(null); }
+}
+var LAME_RATES = { 8000: 1, 11025: 1, 12000: 1, 16000: 1, 22050: 1, 24000: 1, 32000: 1, 44100: 1, 48000: 1 };
+function qmcRenderAt(ac, inBuf, rate, cb) {
+if (inBuf.sampleRate === rate) { cb(inBuf); return; }
+var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+if (!OC) { cb(null); return; }
+var ch = Math.min(2, inBuf.numberOfChannels || 1);
+var frames = Math.max(1, Math.round(inBuf.duration * rate));
+var oc = null;
+try { oc = new OC(ch, frames, rate); } catch (e) { cb(null); return; }
+var src = oc.createBufferSource();
+src.buffer = inBuf;
+src.connect(oc.destination);
+src.start(0);
+var done = false;
+var finish = function (b) { if (done) return; done = true; cb(b || null); };
+try {
+var p = oc.startRendering();
+if (p && typeof p.then === 'function') p.then(function (b) { finish(b); }, function () { finish(null); });
+else { oc.oncomplete = function (e) { finish(e.renderedBuffer); }; oc.onerror = function () { finish(null); }; }
+} catch (e) { finish(null); }
+}
+function qmcEncodeMp3(audioBuf, onDone, onFail) {
+try {
+var ch = Math.min(2, audioBuf.numberOfChannels || 1);
+var sr = audioBuf.sampleRate;
+var enc = new window.lamejs.Mp3Encoder(ch, sr, ch === 1 ? 96 : 128);
+var lf = audioBuf.getChannelData(0);
+var rf = ch > 1 ? audioBuf.getChannelData(1) : null;
+var total = lf.length;
+var BLOCK = 1152, STEP = 1152 * 40;
+var chunks = [];
+var pos = 0;
+function to16(f32) {
+var n = f32.length, out = new Int16Array(n);
+for (var i = 0; i < n; i++) {
+var s = f32[i];
+if (s > 1) s = 1; else if (s < -1) s = -1;
+out[i] = s < 0 ? (s * 0x8000) : (s * 0x7FFF);
+}
+return out;
+}
+function run() {
+try {
+var end = Math.min(pos + STEP, total);
+while (pos < end) {
+var n = Math.min(BLOCK, total - pos);
+var L = to16(lf.subarray(pos, pos + n));
+var d;
+if (ch > 1) d = enc.encodeBuffer(L, to16(rf.subarray(pos, pos + n)));
+else d = enc.encodeBuffer(L);
+if (d && d.length) chunks.push(new Int8Array(d)); // 拷贝脱离 lame 复用缓冲区
+pos += n;
+}
+if (pos < total) setTimeout(run, 0);
+else {
+var f = enc.flush();
+if (f && f.length) chunks.push(new Int8Array(f));
+onDone(chunks);
+}
+} catch (e) { onFail(e); }
+}
+run();
+} catch (e) { onFail(e); }
+}
+function qmcConvertToFile(file, cb) {
+var baseName = String(file.name || 'music').replace(/\.[^.]+$/, '');
+var fr = new FileReader();
+fr.onload = function () {
+var res;
+try {
+res = window.mochiQmc.decryptBuffer(file.name, new Uint8Array(fr.result));
+} catch (e) { cb(e); return; }
+if (res.ext === 'mp3') {
+cb(null, makeBlobFile([res.audio], baseName + '.mp3', 'audio/mpeg'), 'mp3');
+return;
+}
+var nativeFallback = function () {
+cb(null, makeBlobFile([res.audio], baseName + '.' + res.ext, res.mime), 'native');
+};
+ensureLamejs(function (ok) {
+if (!ok) { nativeFallback(); return; }
+var ab = res.audio.buffer.slice(res.audio.byteOffset, res.audio.byteOffset + res.audio.byteLength);
+qmcAudioDecode(ab, function (d) {
+if (!d) { nativeFallback(); return; }
+var closeAc = function () { try { d.ac.close(); } catch (e) {} };
+var encode = function (audioBuf) {
+if (!audioBuf) { closeAc(); nativeFallback(); return; }
+qmcEncodeMp3(audioBuf, function (chunks) {
+closeAc();
+if (!chunks.length) { nativeFallback(); return; }
+cb(null, makeBlobFile(chunks, baseName + '.mp3', 'audio/mpeg'), 'mp3');
+}, function () { closeAc(); nativeFallback(); });
+};
+if (LAME_RATES[d.buf.sampleRate]) encode(d.buf);
+else qmcRenderAt(d.ac, d.buf, 44100, function (b) { encode(b); });
+});
+});
+};
+fr.onerror = function () { cb(new Error('文件读取失败')); };
+try { fr.readAsArrayBuffer(file); } catch (e) { cb(e); }
+}
 function uploadFiles(files) {
 const list = Array.from(files);
 if (!list.length) return;
 toast('正在上传 ' + list.length + ' 首音乐…');
 let idx = 0;
 let probeBad = 0; // #700：导入时浏览器就解不动的文件数（加密格式/编码不支持）
+let qmcOk = 0;    // QQ音乐加密文件（mgg/mflac/qmc）成功解密转换数
+let qmcFail = 0;  // 解密转换失败数（无密钥尾标/解密校验失败等）
 const done = () => {
 saveLibrary(); renderPage();
-if (probeBad) toast('已上传 ' + list.length + ' 首音乐，其中 ' + probeBad + ' 首本机浏览器可能放不了（加密格式或编码不支持）——放不了的建议转成 mp3 再重新上传');
-else toast('已上传 ' + list.length + ' 首音乐（点歌曲右侧 ⋯ 可设置封面）');
+let msg = '已上传 ' + list.length + ' 首音乐';
+if (qmcOk) msg += '（含 ' + qmcOk + ' 首 QQ音乐加密文件已自动转换为 mp3）';
+if (probeBad) msg += '；其中 ' + probeBad + ' 首本机浏览器可能放不了（加密格式或编码不支持）——放不了的建议转成 mp3 再重新上传';
+else if (!qmcFail) msg += '（点歌曲右侧 ⋯ 可设置封面）';
+if (qmcFail) msg += '；' + qmcFail + ' 首 QQ音乐加密文件转换失败（新版无密钥尾标或文件损坏，已跳过）';
+toast(msg);
 };
 const readFile = (file, cb, failCb) => {
 const r1 = new FileReader();
@@ -1033,10 +1186,7 @@ toDataUrl(saveStrFallback);
 toDataUrl(saveStrFallback);
 });
 };
-const next = function () {
-if (idx >= list.length) { done(); return; }
-const file = list[idx++];
-if (file.size > 50 * 1024 * 1024) { toast('「' + file.name + '」超过 50MB，已跳过'); next(); return; }
+const ingestOne = function (file) {
 readFile(file, function (buf) {
 const id = 'sm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
 const name = file.name.replace(/\.[^.]+$/, '');
@@ -1081,6 +1231,28 @@ tmp.src = payload;
 }
 storePayload(id, file, buf);
 }, function () { next(); });
+};
+const next = function () {
+if (idx >= list.length) { done(); return; }
+const file = list[idx++];
+if (file.size > 50 * 1024 * 1024) { toast('「' + file.name + '」超过 50MB，已跳过'); next(); return; }
+if (window.mochiQmc && window.mochiQmc.isQmcName(file.name)) {
+const shortName = String(file.name || '').replace(/\.[^.]+$/, '');
+toast('正在解密转换「' + shortName + '」…');
+qmcConvertToFile(file, function (err, outFile, kind) {
+if (err || !outFile) {
+qmcFail++;
+const reason = (err && err.message) ? err.message : '未知错误';
+toast('「' + shortName + '」转换失败：' + reason + '，已跳过');
+next();
+return;
+}
+qmcOk++;
+ingestOne(outFile);
+});
+return;
+}
+ingestOne(file);
 };
 next();
 }
