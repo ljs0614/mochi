@@ -10361,6 +10361,18 @@ color: #777;
 [data-chat-style="wechat"][data-theme="dark"] .chat-input-row button:not(.chat-send) {
 color: #CCC;
 }
+/* 非微信风格：彻底禁掉气泡尖角尾巴。默认设计本身没有尾巴，这里兜底防止
+   切换风格/导入美化后残留的 ::before 三角（如绿色小尖角）继续显示。 */
+html:not([data-chat-style="wechat"]) .msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-chat .msg-in .msg-bubble.msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-chat .msg-out .msg-bubble.msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-fav .msg-in .msg-bubble.msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-fav .msg-out .msg-bubble.msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-group-chat .msg-in .msg-bubble.msg-bubble::before,
+html:not([data-chat-style="wechat"]) #page-group-chat .msg-out .msg-bubble.msg-bubble::before {
+content: none !important;
+display: none !important;
+}
 </style>
 </head>
 <body>
@@ -29046,7 +29058,15 @@ refreshChatStyleVal();
 if (ctl && ctl.pills) ctl.pills(CHAT_STYLE_PILLS, cur);
 });
 }
-document.addEventListener('mochi-restore-done', refreshChatStyleVal);
+// 数据恢复/导入后：把 <html> 上的风格属性按存储值重新同步一次，
+// 避免出现「设置显示默认、页面还停留在微信模式」的错位（会残留微信绿尾巴等）。
+const syncChatStyleAttr = () => {
+try {
+if (getChatStyle() === 'wechat') document.documentElement.setAttribute('data-chat-style', 'wechat');
+else document.documentElement.removeAttribute('data-chat-style');
+} catch (eS) {}
+};
+document.addEventListener('mochi-restore-done', () => { syncChatStyleAttr(); refreshChatStyleVal(); });
 } catch (e) {}
 const ACCENT_KEY = 'xy-home-v2:accent-color';
 const openHexColorModal = (title, cur, apply) => {
