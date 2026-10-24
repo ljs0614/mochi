@@ -34,11 +34,11 @@
     if (!st) {
       st = document.createElement('style'); st.id = 'chat-fx-style';
       st.textContent =
-        '.chat-fx-layer{position:fixed;inset:0;z-index:500;pointer-events:none;overflow:hidden}' +
+        '.chat-fx-layer{position:absolute;top:0;left:0;right:0;bottom:0;z-index:500;pointer-events:none;overflow:hidden}' +
         '.chat-fx-em{position:absolute;bottom:-60px;will-change:transform,opacity;animation:chatFxUp linear forwards}' +
         '@keyframes chatFxUp{0%{transform:translateY(0) translateX(0) rotate(0);opacity:0}' +
         '8%{opacity:1}80%{opacity:1}100%{transform:translateY(-105vh) translateX(var(--fx-sway,20px)) rotate(var(--fx-rot,20deg));opacity:0}}' +
-        '.chat-fx-panel{position:fixed;inset:0;z-index:1200;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.35)}' +
+        '.chat-fx-panel{position:absolute;top:0;left:0;right:0;bottom:0;z-index:1200;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.35)}' +
         '.chat-fx-panel[hidden]{display:none}' +
         '.chat-fx-card{width:min(480px,92vw);max-height:70vh;overflow-y:auto;background:var(--card-bg,#fff);border-radius:16px 16px 0 0;padding:16px 14px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box;font-size:14px}' +
         '.chat-fx-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700}' +
@@ -55,7 +55,7 @@
       document.head.appendChild(st);
     }
     layer = document.getElementById('chat-fx-layer');
-    if (!layer) { layer = document.createElement('div'); layer.id = 'chat-fx-layer'; layer.className = 'chat-fx-layer'; document.body.appendChild(layer); }
+    if (!layer) { layer = document.createElement('div'); layer.id = 'chat-fx-layer'; layer.className = 'chat-fx-layer'; (document.getElementById('page-chat') || document.body).appendChild(layer); }
     return layer;
   }
 
@@ -151,7 +151,7 @@
       '<div class="chat-fx-add"><input id="chat-fx-new-kw" placeholder="触发词，如：抱抱" maxlength="30"><input id="chat-fx-new-em" placeholder="表情，如：🤗💞" maxlength="12"><button class="chat-fx-btn" data-fx="add">添加</button></div>' +
       '<div class="chat-fx-hint">聊天里发出或收到包含触发词的消息时，屏幕会飘对应表情。<br>预设规则（爱心·早安·晚安·想你·生日·亲亲·庆祝·大笑）无需添加即生效，不可删除；下方是自定义规则，点删除可移除。</div>' +
       '</div>';
-    document.body.appendChild(panel);
+    (document.getElementById('page-chat') || document.body).appendChild(panel);
     // 点击遮罩关闭
     panel.addEventListener('click', function (e) { if (e.target === panel) panel.hidden = true; });
     var x = panel.querySelector('[data-fx="close"]');
