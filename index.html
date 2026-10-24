@@ -10265,6 +10265,12 @@ display: inline-block !important;
 [data-chat-style="wechat"] .msg-bubble:has(> .msg-img-sm:only-child)::before {
 display: none !important;
 }
+/* 微信风格：表情/图片消息改为顶部对齐，让图片上端与头像上端齐平（同真实微信） */
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img:only-child),
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img-big:only-child),
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img-sm:only-child) {
+align-items: flex-start !important;
+}
 [data-chat-style="wechat"] .msg-img-big,
 [data-chat-style="wechat"] .msg-bubble:has(> .msg-img-big:only-child) .msg-img {
 max-width: 260px !important;
