@@ -74619,6 +74619,8 @@ st.textContent =
 '.chat-fx-add{display:flex;gap:6px;margin-top:10px}' +
 '.chat-fx-add input{flex:1;min-width:0;padding:8px 10px;border:1px solid rgba(128,128,128,.35);border-radius:10px;background:var(--card-bg,#fff);color:inherit;font-size:14px}' +
 '.chat-fx-btn{border:0;background:#111;color:#fff;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:14px}' +
+'.chat-fx-play{cursor:pointer}'+
+'.chat-fx-play:active{background:rgba(0,0,0,.06)}'+
 '.chat-fx-hint{color:#999;font-size:12px;margin-top:8px;line-height:1.6}';
 document.head.appendChild(st);
 }
@@ -74707,7 +74709,7 @@ panel.innerHTML =
 '<label class="chat-fx-row" style="cursor:pointer"><input type="checkbox" id="chat-fx-on"> <span>开启彩蛋动画</span></label>' +
 '<div id="chat-fx-rules"></div>' +
 '<div class="chat-fx-add"><input id="chat-fx-new-kw" placeholder="触发词，如：抱抱" maxlength="30"><input id="chat-fx-new-em" placeholder="表情，如：🤗💞" maxlength="12"><button class="chat-fx-btn" data-fx="add">添加</button></div>' +
-'<div class="chat-fx-hint">聊天里发出或收到包含触发词的消息时，屏幕会飘对应表情。<br>预设规则（爱心·早安·晚安·想你·生日·亲亲·庆祝·大笑）无需添加即生效，不可删除；下方是自定义规则，点删除可移除。</div>' +
+'<div class="chat-fx-hint">点击任一规则行，立刻播放对应特效。<br>聊天消息里包含触发词时也会自动触发；预设规则开箱即用，自定义规则点「删除」可移除。</div>' +
 '</div>';
 (document.getElementById('page-chat') || document.body).appendChild(panel);
 panel.addEventListener('click', function (e) { if (e.target === panel) panel.hidden = true; });
@@ -74727,11 +74729,17 @@ var box = panel.querySelector('#chat-fx-rules');
 if (!box) return;
 var custom = loadCustom();
 var html = '';
+html += '<div class="chat-fx-hint" style="margin:6px 0 2px">预设规则（点一下播放）：</div>';
+for (var p = 0; p < PRESETS.length; p++) {
+var pr = PRESETS[p];
+html += '<div class="chat-fx-row chat-fx-play" data-fx-play="' + p + '"><span class="chat-fx-kw">' + escH(pr.kw) + '</span>' +
+'<span class="chat-fx-ems">' + escH((pr.emojis || []).join(' ')) + '</span></div>';
+}
+html += '<div class="chat-fx-hint" style="margin:8px 0 2px">自定义规则（点一下播放）：</div>';
 if (custom.length) {
-html += '<div class="chat-fx-hint" style="margin:6px 0 2px">自定义规则：</div>';
 for (var i = 0; i < custom.length; i++) {
 var c = custom[i];
-html += '<div class="chat-fx-row"><span class="chat-fx-kw">' + escH(c.kw) + '</span>' +
+html += '<div class="chat-fx-row chat-fx-play" data-fx-cplay="' + i + '"><span class="chat-fx-kw">' + escH(c.kw) + '</span>' +
 '<span class="chat-fx-ems">' + escH((c.emojis || []).join(' ')) + '</span>' +
 '<button class="chat-fx-del" data-fx-del="' + i + '">删除</button></div>';
 }
@@ -74739,6 +74747,25 @@ html += '<div class="chat-fx-row"><span class="chat-fx-kw">' + escH(c.kw) + '</s
 html += '<div class="chat-fx-hint" style="margin:6px 0 2px">还没有自定义规则，在下方添加～</div>';
 }
 box.innerHTML = html;
+var plays = box.querySelectorAll('[data-fx-play]');
+for (var a = 0; a < plays.length; a++) {
+(function (el) {
+el.addEventListener('click', function () {
+var pr = PRESETS[parseInt(el.getAttribute('data-fx-play'), 10)];
+if (pr) fireFx(pr.emojis, null);
+});
+})(plays[a]);
+}
+var cplays = box.querySelectorAll('[data-fx-cplay]');
+for (var b = 0; b < cplays.length; b++) {
+(function (el) {
+el.addEventListener('click', function (ev) {
+if (ev.target && ev.target.closest && ev.target.closest('[data-fx-del]')) return; // 点删除不播放
+var cc = loadCustom()[parseInt(el.getAttribute('data-fx-cplay'), 10)];
+if (cc) fireFx(cc.emojis, null);
+});
+})(cplays[b]);
+}
 var dels = box.querySelectorAll('[data-fx-del]');
 for (var j = 0; j < dels.length; j++) {
 (function (btn) {
