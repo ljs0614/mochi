@@ -74675,7 +74675,7 @@ if (!hits) return;
 for (var i = 0; i < hits.length; i++) fireFx(hits[i].emojis, hits[i].kw);
 }
 function watchChat() {
-var box = document.getElementById('chat-msgs');
+var box = document.getElementById('chat-body');
 if (!box) { setTimeout(watchChat, 1200); return; } // 聊天页可能后建
 if (box.__cfxWatched) return;
 box.__cfxWatched = true;
@@ -74690,7 +74690,7 @@ if (!last || last.nodeType !== 1) continue;
 var txt = (last.textContent || '').trim();
 if (txt) fireForText(txt.slice(0, 400));
 }
-}).observe(box, { childList: true });
+}).observe(box, { childList: true, subtree: true });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchChat);
 else watchChat();
