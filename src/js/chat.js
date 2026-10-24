@@ -9715,6 +9715,16 @@ if (moreGuess) {
     if (window.openGuessPanel) window.openGuessPanel();
   });
 }
+// 关键词彩蛋入口
+var moreFx = document.getElementById('more-fx');
+if (moreFx) {
+  moreFx.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (morePanel) morePanel.hidden = true;
+    var pc = document.getElementById('poke-card'); if (pc) pc.hidden = true;
+    if (window.openChatFxPanel) window.openChatFxPanel();
+  });
+}
 window.sendSnakeResult = function (d) {
 if (!d) return;
 addRec({ side: 'in', special: 'snake', snkResult: d.result, snkPLen: d.pLen, snkOLen: d.oLen, snkPFood: d.pFood, snkOFood: d.oFood, snkPScore: d.pScore, snkOScore: d.oScore, snkTime: d.time, nightAllow: true });
