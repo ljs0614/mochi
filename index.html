@@ -6045,6 +6045,31 @@ border-radius:12px;
 .water-card { transition:box-shadow .3s, transform .3s; }
 .water-card.done { animation: waterDone .9s ease; }
 @keyframes waterDone { 0%{ transform:scale(1); } 30%{ transform:scale(1.035); box-shadow:0 0 0 6px rgba(74,159,212,.18); } 70%{ box-shadow:0 0 0 14px rgba(74,159,212,.05); } 100%{ transform:scale(1); box-shadow:none; } }
+.daka-body { flex:1; overflow-y:auto; box-sizing:border-box; padding:14px 14px 40px; }
+.daka-hero { padding:22px 18px 20px; border-radius:14px; text-align:center; margin-bottom:16px; transition:box-shadow .3s, transform .3s; }
+.daka-hero-num { font-size:40px; font-weight:700; color:var(--ink,#222); line-height:1.1; font-variant-numeric:tabular-nums; }
+.daka-hero-num i { font-style:normal; font-size:18px; color:var(--ink-soft,#999); }
+.daka-hero-sub { font-size:12px; color:var(--ink-soft,#999); margin-top:8px; }
+.daka-bar { height:8px; border-radius:4px; background:rgba(0,0,0,.08); overflow:hidden; margin-top:14px; }
+.daka-fill { height:100%; border-radius:4px; width:0; background:linear-gradient(90deg,#9be2b8,#4caf80); transition:width .4s; }
+.daka-hero.done { animation: dakaDone .9s ease; }
+@keyframes dakaDone { 0%{ transform:scale(1); } 30%{ transform:scale(1.035); box-shadow:0 0 0 6px rgba(76,175,128,.18); } 70%{ box-shadow:0 0 0 14px rgba(76,175,128,.05); } 100%{ transform:scale(1); box-shadow:none; } }
+.daka-streak { text-align:center; font-size:13px; color:#e8533d; font-weight:600; margin:-6px 0 10px; min-height:18px; }
+.daka-list { border-radius:14px; padding:6px 14px; margin-bottom:16px; }
+.daka-row { display:flex; align-items:center; gap:10px; padding:11px 0; }
+.daka-row + .daka-row { border-top:1px solid rgba(0,0,0,.05); }
+.daka-ck { width:26px; height:26px; border-radius:50%; border:2px solid rgba(0,0,0,.18); background:none; flex-shrink:0; font-size:14px; line-height:1; color:transparent; display:flex; align-items:center; justify-content:center; padding:0; -webkit-tap-highlight-color:transparent; transition:background .2s, border-color .2s; }
+.daka-ck.on { background:linear-gradient(135deg,#6fd3a0,#4caf80); border-color:#4caf80; color:#fff; }
+.daka-name { flex:1; min-width:0; font-size:15px; color:var(--ink,#333); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.daka-row.done .daka-name { color:var(--ink-soft,#999); text-decoration:line-through; text-decoration-color:rgba(0,0,0,.25); }
+.daka-n { font-size:11px; color:#e8873d; background:rgba(232,135,61,.12); border-radius:8px; padding:3px 7px; white-space:nowrap; flex-shrink:0; }
+.daka-del { border:none; background:none; color:var(--ink-soft,#bbb); font-size:14px; padding:4px 2px 4px 8px; flex-shrink:0; -webkit-tap-highlight-color:transparent; }
+.daka-empty { text-align:center; font-size:13px; color:var(--ink-soft,#aaa); padding:16px 0 12px; }
+.daka-msg { padding:14px; border-radius:14px; text-align:center; font-size:15px; color:var(--ink,#555); min-height:22px; margin-bottom:16px; transition:opacity .2s; }
+.daka-msg.fade { opacity:0; }
+.daka-manage { text-align:center; margin-top:4px; }
+.daka-add, .daka-add-msg, .daka-send { font-size:13px; color:var(--ink-soft,#888); background:none; border:1px dashed rgba(0,0,0,.15); border-radius:10px; padding:8px 14px; margin:4px 4px 0; font-family:inherit; }
+.daka-send.on { color:#4caf80; border-color:rgba(76,175,128,.45); }
 .eat-card { padding:28px 18px; border-radius:14px; text-align:center; margin-bottom:8px; }
 .eat-label { font-size:13px; color:var(--ink-soft,#999); margin-bottom:8px; }
 .eat-dish { font-size:28px; font-weight:700; color:var(--ink,#222); min-height:36px; transition:opacity .2s; user-select:none; -webkit-user-select:none; }
@@ -8793,6 +8818,10 @@ radial-gradient(circle at calc(100% - 5px) calc(100% - 5px), rgba(255,255,255,.1
 [data-theme="dark"] .water-col em { color:#aaa; }
 [data-theme="dark"] .water-col.today em { color:#ddd; }
 [data-theme="dark"] .water-msg { color:#ccc; }
+[data-theme="dark"] .daka-ck { border-color:rgba(255,255,255,.25); }
+[data-theme="dark"] .daka-row + .daka-row { border-top-color:rgba(255,255,255,.07); }
+[data-theme="dark"] .daka-msg { color:#ccc; }
+[data-theme="dark"] .daka-bar { background:rgba(255,255,255,.1); }
 [data-theme="dark"] .eat-change { background:var(--dark-hover); color:#ccc; }
 [data-theme="dark"] .eat-send { background:var(--btn-bg); color:var(--btn-ink); }
 [data-theme="dark"] .pmp-menu button { border-color:var(--dark-border); background:var(--dark-card-97); color:var(--ink); }
@@ -10621,9 +10650,9 @@ display: none !important;
     <div class="splash-footcard">
       <!-- v3.8.y：底部版本块——两行：名称+版本 / 部署时间+实时秒数（实时秒写入 #splash-ver-live） -->
       <!-- #570：第三行开屏新版检测（ver-check.js 渲染）：检测中 / ✓已是最新 / ⇩有新版本可点更新 -->
-      <div class="splash-ver" id="splash-ver" data-build-ts="1792835880000">
+      <div class="splash-ver" id="splash-ver" data-build-ts="1793176560000">
         <span class="sv-app">Mochi 字卡传讯 <b>v3.26.570</b></span>
-        <span class="sv-deploy">部署于 2026-10-24 17:58<span id="splash-ver-live"></span></span>
+        <span class="sv-deploy">部署于 2026-10-28 16:36<span id="splash-ver-live"></span></span>
         <span class="sv-check" id="splash-ver-check" hidden></span>
       </div>
       <!-- v3.5.120：数据（IndexedDB 回填）加载完成前不显示「点击进入」按钮，
@@ -10945,7 +10974,7 @@ display: none !important;
 <div class="app-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11L12 4l8.5 7"/><path d="M5.8 9.6V20h12.4V9.6"/><path d="M10 20v-5.4h4V20"/></svg></div>
 <div class="app-name">房间</div>
 </div>
-<!-- 本页动态注入 喝水/吃什么/存钱罐/番茄钟（p2-features.js，喝水排在本页静态图标之后） -->
+<!-- 本页动态注入 喝水/吃什么/计划打卡/番茄钟（p2-features.js，喝水排在本页静态图标之后；存钱罐已让位给计划打卡，可在桌面编辑模式加回） -->
 </div>
       </div><!-- /page-slide 第三页 -->
       </div><!-- /desktop-pages -->
@@ -12768,7 +12797,7 @@ display: none !important;
           <div class="lic-li">和 TA 一起摸鱼打卡：摸鱼值 / 工作值双方随机增长，打卡横幅统计摸鱼天数，摸鱼抓包彩蛋涨值翻倍</div>
           <div class="lic-li">第一页图标：聊天、群聊（开启群聊模式后显示）、主页、信箱、朋友圈、日历、纪念、占卜（开启群聊模式期间收起，改用 设置 → 工具 → 占卜 打开）、收藏</div>
           <div class="lic-li">第二页：音乐播放器卡、本周日常、周末倒计时；图标——音乐、聊天统计、提问记录、寻踪、花园、此间、同频、伸手</div>
-          <div class="lic-li">第三页：经期倒计时大卡、今日备忘 / 今天的心情、备忘录状态横幅；图标——经期记录、记账、梦角档案、我的档案、房间、备忘录、喝水、吃什么、存钱罐、番茄钟</div>
+          <div class="lic-li">第三页：经期倒计时大卡、今日备忘 / 今天的心情、备忘录状态横幅；图标——经期记录、记账、梦角档案、我的档案、房间、备忘录、喝水、吃什么、计划打卡、番茄钟</div>
           <div class="lic-li">心意市集 / 心意柜图标成组自动注入桌面</div>
           <div class="lic-li">装修模式：编辑布局、添加卡片、点图标换图、卡片设背景、长按拖拽跨页摆放、恢复图标</div>
           <div class="lic-li">手机桌面美化：主题色、桌面字号、卡片大小、组件圆角、内置壁纸预设、背景模糊遮罩、每页独立背景图</div>
@@ -12874,6 +12903,7 @@ display: none !important;
           <div class="lic-li">【喝水】今日杯数进度环 + 近 7 天柱状图，目标杯数 / 杯量自定义；TA 定时催喝水、达标夸奖，战报可发到聊天</div>
           <div class="lic-li">【吃什么】随机抽菜或转盘抽取，多菜单管理与批量编辑，「问 TA」把菜名发到聊天征求意见；饭点有吃饭提醒（概率可调）</div>
           <div class="lic-li">【存钱罐】存取 + 多个小心愿目标（可请 TA 当监督人），25% / 50% / 75% 进度里程碑庆祝，TA 碎碎念回应与偷偷塞硬币彩蛋</div>
+          <div class="lic-li">【计划打卡】每日计划列表，点一下打卡，单计划连续天数与全勤连续天数，TA 鼓励字卡，全部完成时 TA 发消息夸你</div>
           <div class="lic-li">【番茄钟】专注 / 小憩 / 长休三档计时（时长可调），🍅 今日与累计统计，铃声 / 本地通知，退回桌面有陪伴模式悬浮条</div>
           <div class="lic-li">【记账】支出收入与自定义分类、月 / 周 / 年视角切换、月度预算进度条、收支柱状图、分类占比环形图与 TOP 排行、流水搜索过滤</div>
             </div>
@@ -29962,6 +29992,9 @@ try { console.info('[mochi] desk-layout 校验失败（损坏/空壳），忽略
 try { store.remove('desk-layout'); } catch (e) {}
 return null;
 }
+let mig = false;
+a.forEach(function (page, pi) { (page || []).forEach(function (w, wi) { if (w === 'app-piggy') { a[pi][wi] = 'app-daka'; mig = true; } }); });
+if (mig) { try { store.set('desk-layout', JSON.stringify(a)); } catch (e) {} }
 return a;
 };
 const buildDeskPages = () => {
@@ -30192,7 +30225,7 @@ setupDeskCountdownClick();
 document.addEventListener('contact-switched', renderDeskTexts);
 document.addEventListener('contact-switched', renderDeskCountdowns);
 const WIDGET_IDS = ['deco', 'quote-row', 'checkin', 'apps', 'music', 'p2apps', 'memo-row', 'week', 'weekend', 'desk-clock', 'desk-calendar', 'desk-timer', 'desk-anniv', 'desk-period',
-'app-chat', 'app-group-chat', 'app-home', 'app-mail', 'app-feed', 'app-calendar', 'app-memory', 'app-divination', 'app-note', 'app-music', 'app-stats', 'app-interact', 'app-checkin', 'p3apps', 'app-period', 'app-accounting', 'app-garden',     'app-tongpin', 'app-shenshou', 'app-water', 'app-eat', 'app-pomo', 'app-cjian', 'app-memo-arc', 'app-my-arc', 'app-room', 'app-piggy', 'app-memo'];
+'app-chat', 'app-group-chat', 'app-home', 'app-mail', 'app-feed', 'app-calendar', 'app-memory', 'app-divination', 'app-note', 'app-music', 'app-stats', 'app-interact', 'app-checkin', 'p3apps', 'app-period', 'app-accounting', 'app-garden',     'app-tongpin', 'app-shenshou', 'app-water', 'app-eat', 'app-pomo', 'app-cjian', 'app-memo-arc', 'app-my-arc', 'app-room', 'app-piggy', 'app-daka', 'app-memo'];
 const WIDGET_NAMES = {
 deco: '纪念日卡', 'quote-row': '今日情话 / 已摸鱼', checkin: '打卡横幅', apps: '功能图标(整组)',
 music: '音乐播放器', p2apps: '第二页功能图标(整组)', 'memo-row': '今日备忘 / 心情', week: '本周日常', weekend: '摸鱼倒计时（周末）',
@@ -30201,7 +30234,7 @@ music: '音乐播放器', p2apps: '第二页功能图标(整组)', 'memo-row': '
 'app-calendar': '日历图标', 'app-memory': '纪念图标', 'app-divination': '占卜图标', 'app-note': '收藏图标',
 'app-music': '音乐图标', 'app-stats': '聊天统计图标', 'app-interact': '提问记录图标', 'app-checkin': '寻踪图标',
 'p3apps': '第三页功能图标(整组)', 'app-period': '经期记录图标', 'app-accounting': '记账图标', 'app-garden': '花园图标',     'app-tongpin': '同频图标', 'app-shenshou': '伸手图标', 'app-water': '喝水图标', 'app-eat': '吃什么图标', 'app-pomo': '番茄钟图标',
-'app-cjian': '此间图标', 'app-memo-arc': '梦角档案图标', 'app-my-arc': '我的档案图标', 'app-room': '房间图标', 'app-piggy': '存钱罐图标', 'app-memo': '备忘录图标',
+'app-cjian': '此间图标', 'app-memo-arc': '梦角档案图标', 'app-my-arc': '我的档案图标', 'app-room': '房间图标', 'app-piggy': '存钱罐图标', 'app-daka': '打卡图标', 'app-memo': '备忘录图标',
 };
 const PREV_BOX = 'display:flex;align-items:center;justify-content:center;width:78px;height:58px;border-radius:10px;background:linear-gradient(135deg,#fff,#f6f6f6);border:1px solid rgba(0,0,0,.07);box-shadow:0 1px 3px rgba(0,0,0,.06);flex-shrink:0;overflow:hidden;padding:4px;box-sizing:border-box';
 const _av = '<span style="width:15px;height:15px;border-radius:50%;background:#f2f2f2;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg></span>';
@@ -30238,7 +30271,7 @@ weekend: '<span style="display:flex;flex-direction:column;align-items:center;jus
 'app-calendar': _appIcoPrev('日历'), 'app-memory': _appIcoPrev('纪念'), 'app-divination': _appIcoPrev('占卜'), 'app-note': _appIcoPrev('收藏'),
 'app-music': _appIcoPrev('音乐'), 'app-stats': _appIcoPrev('统计'), 'app-interact': _appIcoPrev('提问'), 'app-checkin': _appIcoPrev('寻踪'),
 'app-period': _appIcoPrev('经期'), 'app-accounting': _appIcoPrev('记账'), 'app-garden': _appIcoPrev('花园'),     'app-tongpin': _appIcoPrev('同频'), 'app-shenshou': _appIcoPrev('伸手'), 'app-water': _appIcoPrev('喝水'), 'app-eat': _appIcoPrev('吃什么'), 'app-pomo': _appIcoPrev('番茄钟'), 'p3apps': _appIcoPrev('经期'),
-'app-cjian': _appIcoPrev('此间'), 'app-memo-arc': _appIcoPrev('梦角档案'), 'app-my-arc': _appIcoPrev('我的档案'), 'app-room': _appIcoPrev('房间'), 'app-piggy': _appIcoPrev('存钱罐'), 'app-memo': _appIcoPrev('备忘录'),
+'app-cjian': _appIcoPrev('此间'), 'app-memo-arc': _appIcoPrev('梦角档案'), 'app-my-arc': _appIcoPrev('我的档案'), 'app-room': _appIcoPrev('房间'), 'app-piggy': _appIcoPrev('存钱罐'), 'app-daka': _appIcoPrev('打卡'), 'app-memo': _appIcoPrev('备忘录'),
 };
 function ensureWidgetPool() {
 let pool = document.getElementById('desk-widget-pool');
@@ -69745,13 +69778,14 @@ const ssApp = makeApp('shenshou', '伸手', '<svg viewBox="0 0 24 24" fill="none
 const waterApp = makeApp('water', '喝水', '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5C8 7 5.5 11 5.5 14.5a6.5 6.5 0 0013 0C18.5 11 16 7 12 2.5z"/></svg>');
 const eatApp = makeApp('eat', '吃什么', '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2.5v7c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-7"/><path d="M5.7 2.5v8.3"/><path d="M8.3 2.5v8.3"/><path d="M7 11.5v10"/><path d="M21 15V2.5a5 5 0 00-5 5v5.5c0 1.1.9 2 2 2h3z"/><path d="M21 15v6.5"/></svg>');
 const piggyApp = makeApp('piggy', '存钱罐', '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6"/><path d="M5 13.5C5 10.4 8.1 8 12 8s7 2.4 7 5.5c0 1.6-.9 3.1-2.3 4.1V20h-2.4l-.4-1.2a9.3 9.3 0 01-3.8 0L9.7 20H7.3v-2.4C5.9 16.6 5 15.1 5 13.5z"/><circle cx="9.3" cy="12.7" r=".55" fill="#111111" stroke="none"/><path d="M18.8 12.3l1.7-.9"/></svg>');
+const dakaApp = makeApp('daka', '打卡', '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 3.5v3"/><path d="M16 3.5v3"/><path d="M8.5 12.6l2.4 2.4 4.6-4.8"/></svg>');
 const pomoApp = makeApp('pomo', '番茄钟', '<svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.8" r="7.2"/><path d="M12 6.6V4.6"/><path d="M12 6.6C10.6 5.4 9 5.3 7.8 6.1"/><path d="M12 6.6c1.4-1.2 3-1.3 4.2-.5"/></svg>');
 const pagesBox = document.getElementById('desktop-pages');
 const st0 = curStore();
 let layArr = null;
 try { if (st0) layArr = JSON.parse(st0.get('desk-layout') || 'null'); } catch (e) {}
 const hasLayout = Array.isArray(layArr);
-const alreadyInLay = hasLayout && layArr.some(p => (p || []).some(w => w === 'app-tongpin' || w === 'app-shenshou' || w === 'app-water' || w === 'app-eat' || w === 'app-pomo' || w === 'app-piggy'));
+const alreadyInLay = hasLayout && layArr.some(p => (p || []).some(w => w === 'app-tongpin' || w === 'app-shenshou' || w === 'app-water' || w === 'app-eat' || w === 'app-pomo' || w === 'app-piggy' || w === 'app-daka'));
 let placed = false;
 if (hasLayout && !alreadyInLay && pagesBox) {
 const curCnt = pagesBox.querySelectorAll('.page-slide').length;
@@ -69762,12 +69796,12 @@ slide.dataset.desk = String(curCnt);
 const grid = document.createElement('div');
 grid.className = 'app-grid';
 grid.setAttribute('data-app', 'tp-page');
-grid.appendChild(tpApp); grid.appendChild(ssApp); grid.appendChild(waterApp); grid.appendChild(eatApp); grid.appendChild(pomoApp); grid.appendChild(piggyApp);
+grid.appendChild(tpApp); grid.appendChild(ssApp); grid.appendChild(waterApp); grid.appendChild(eatApp); grid.appendChild(pomoApp); grid.appendChild(dakaApp);
 slide.appendChild(grid);
 pagesBox.appendChild(slide);
 try {
 st0.set('desk-page-count', String(curCnt + 1));
-layArr.push(['app-tongpin', 'app-shenshou', 'app-water', 'app-eat', 'app-pomo', 'app-piggy']);
+layArr.push(['app-tongpin', 'app-shenshou', 'app-water', 'app-eat', 'app-pomo', 'app-daka']);
 st0.set('desk-layout', JSON.stringify(layArr));
 } catch (e) {}
 try { if (window.deskRebuild) window.deskRebuild(); } catch (e) {}
@@ -69780,8 +69814,8 @@ const p3g = document.querySelector('.app-grid.p3-grid');
 if (p2Grid) {
 p2Grid.appendChild(tpApp); p2Grid.appendChild(ssApp);
 } else if (p3g) { p3g.appendChild(tpApp); p3g.appendChild(ssApp); }
-if (p3g) { p3g.appendChild(waterApp); p3g.appendChild(eatApp); p3g.appendChild(piggyApp); p3g.appendChild(pomoApp); }
-else if (p2Grid) { p2Grid.appendChild(waterApp); p2Grid.appendChild(eatApp); p2Grid.appendChild(piggyApp); p2Grid.appendChild(pomoApp); }
+if (p3g) { p3g.appendChild(waterApp); p3g.appendChild(eatApp); p3g.appendChild(dakaApp); p3g.appendChild(pomoApp); }
+else if (p2Grid) { p2Grid.appendChild(waterApp); p2Grid.appendChild(eatApp); p2Grid.appendChild(dakaApp); p2Grid.appendChild(pomoApp); }
 try { if (window.applyDeskLayout) window.applyDeskLayout(); } catch (e) {}
 }
 const DEF_STATUS = ['在听雨', '在看你写东西', '没睡，在发呆', '刚路过你身边', '在想你', '在发呆', '在看你', '在等你看我'];
@@ -71423,6 +71457,161 @@ const row = t.closest ? t.closest('[data-coinpick]') : null;
 if (row) { if (editingNow()) return; piggySetCoinCur(parseInt(row.getAttribute('data-coinpick'), 10)); piggyCoinRender(); }
 });
 document.getElementById('piggy-coin-hist').addEventListener('click', function (e) { if (e.target && e.target.id === 'coin-more') { piggyCoinHistAll = !piggyCoinHistAll; piggyCoinRender(); } });
+// ===== 每日计划打卡（桌面图标位：替换原存钱罐；存钱罐页面与数据保留，可在桌面编辑模式加回） =====
+const dakaPage = document.createElement('div');
+dakaPage.className = 'page'; dakaPage.id = 'page-daka'; dakaPage.hidden = true;
+dakaPage.innerHTML =
+'<div class="chat-head"><span class="ch-back" id="daka-back"><svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span><span class="ch-name">计划打卡</span></div>' +
+'<div class="daka-body">' +
+'<div class="daka-hero glass" id="daka-hero"><div class="daka-hero-num" id="daka-hero-num">0<i>/0</i></div><div class="daka-bar"><div class="daka-fill" id="daka-fill"></div></div><div class="daka-hero-sub" id="daka-hero-sub">今天也一点一点来</div></div>' +
+'<div class="daka-streak" id="daka-streak"></div>' +
+'<div class="daka-list glass" id="daka-list"></div>' +
+'<div class="daka-msg glass" id="daka-msg">点左边的小圆，完成一个就打个勾</div>' +
+'<div class="daka-manage"><button class="daka-add" id="daka-add">＋ 新计划</button><button class="daka-add-msg" id="daka-add-msg">+ 鼓励字卡</button><button class="daka-send on" id="daka-send">发到聊天：开</button></div>' +
+'</div>';
+host.appendChild(dakaPage);
+const DEF_DAKA_MSGS = ['好，记下了', '今天也做到了', '我在看，继续', '这一笔算数', '嗯，又完成一件', '慢慢来，但别停'];
+const DEF_DAKA_ALL = ['全部完成，厉害', '今天满分，陪你歇会儿', '都做到了，我在', '收工啦，辛苦了'];
+function dakaDayStr(offset) { const d = new Date(); if (offset) d.setDate(d.getDate() + offset); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function dakaPlans() { const s = curStore(); if (!s) return []; try { const a = JSON.parse(s.get('daka-plans') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function dakaSavePlans(a) { const s = curStore(); if (s) try { s.set('daka-plans', JSON.stringify(a)); } catch (e) {} }
+function dakaLog() { const s = curStore(); if (!s) return {}; try { return JSON.parse(s.get('daka-log') || '{}') || {}; } catch (e) { return {}; } }
+function dakaSaveLog(log) {
+const s = curStore(); if (!s) return;
+try {
+const keys = Object.keys(log).sort();
+while (keys.length > 40) { delete log[keys.shift()]; }
+s.set('daka-log', JSON.stringify(log));
+} catch (e) {}
+}
+function dakaMsgs() { const s = curStore(); if (!s) return DEF_DAKA_MSGS.slice(); try { const a = JSON.parse(s.get('daka-msgs') || '[]'); return a.length ? a : DEF_DAKA_MSGS.slice(); } catch (e) { return DEF_DAKA_MSGS.slice(); } }
+function dakaSendOn() { const s = curStore(); try { return s.get('daka-send-chat') !== '0'; } catch (e) { return true; } }
+function dakaDoneArr(ds) { const log = dakaLog(); const a = log[ds]; return Array.isArray(a) ? a : []; }
+function dakaAllDoneOn(ds) {
+const plans = dakaPlans();
+const dayEnd = new Date(ds + 'T23:59:59').getTime();
+const list = plans.filter(p => !p.t || p.t <= dayEnd);
+if (!list.length) return false;
+const done = dakaDoneArr(ds);
+return list.every(p => done.indexOf(p.id) >= 0);
+}
+function dakaFullStreak() {
+let n = 0; let off = dakaAllDoneOn(dakaDayStr(0)) ? 0 : 1;
+while (dakaAllDoneOn(dakaDayStr(-off))) { n++; off++; }
+return n;
+}
+function dakaPlanStreak(id) {
+let n = 0; let off = dakaDoneArr(dakaDayStr(0)).indexOf(id) >= 0 ? 0 : 1;
+while (dakaDoneArr(dakaDayStr(-off)).indexOf(id) >= 0) { n++; off++; }
+return n;
+}
+function dakaShowMsg(txt) { const el = document.getElementById('daka-msg'); if (el) { el.classList.add('fade'); setTimeout(() => { el.textContent = '“' + txt + '”'; el.classList.remove('fade'); }, 200); } }
+function dakaRender() {
+const plans = dakaPlans();
+const today = dakaDayStr(0);
+const done = dakaDoneArr(today);
+const dn = plans.filter(p => done.indexOf(p.id) >= 0).length;
+const numEl = document.getElementById('daka-hero-num'); if (numEl) numEl.innerHTML = dn + '<i>/' + plans.length + '</i>';
+const fill = document.getElementById('daka-fill'); if (fill) fill.style.width = plans.length ? Math.min(100, dn / plans.length * 100) + '%' : '0%';
+const sub = document.getElementById('daka-hero-sub');
+if (sub) {
+if (!plans.length) sub.textContent = '先加一个想每天坚持的小事吧';
+else if (!dn) sub.textContent = '今天也一点一点来';
+else if (dn < plans.length) sub.textContent = '还差 ' + (plans.length - dn) + ' 个，可以的';
+else sub.textContent = '今天全部完成 🎉';
+}
+const st = document.getElementById('daka-streak');
+if (st) { const n = dakaFullStreak(); st.textContent = (n >= 1 && dn === plans.length && plans.length) ? '🔥 连续全勤 ' + n + ' 天' : ''; }
+const box = document.getElementById('daka-list');
+if (box) {
+if (!plans.length) { box.innerHTML = '<div class="daka-empty">还没有计划，点下面「＋ 新计划」加一个</div>'; }
+else {
+let h = '';
+plans.forEach(p => {
+const on = done.indexOf(p.id) >= 0;
+const n = dakaPlanStreak(p.id);
+h += '<div class="daka-row' + (on ? ' done' : '') + '" data-dk="' + p.id + '">' +
+'<button class="daka-ck' + (on ? ' on' : '') + '">✓</button>' +
+'<span class="daka-name">' + dakaEsc(p.name) + '</span>' +
+(n >= 2 ? '<span class="daka-n">🔥 连 ' + n + ' 天</span>' : '') +
+'<button class="daka-del" data-dkdel="' + p.id + '">✕</button></div>';
+});
+box.innerHTML = h;
+}
+}
+}
+function dakaEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function dakaToggle(id) {
+const log = dakaLog(); const today = dakaDayStr(0);
+const arr = Array.isArray(log[today]) ? log[today].slice() : [];
+const i = arr.indexOf(id);
+const wasAll = dakaAllDoneOn(today);
+let checked;
+if (i >= 0) { arr.splice(i, 1); checked = false; } else { arr.push(id); checked = true; }
+log[today] = arr; dakaSaveLog(log);
+dakaRender();
+if (checked) {
+try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
+const nowAll = dakaAllDoneOn(today);
+const pool = nowAll ? DEF_DAKA_ALL : dakaMsgs();
+const m = pool[Math.floor(Math.random() * pool.length)];
+dakaShowMsg(m);
+if (nowAll && !wasAll) {
+const hero = document.getElementById('daka-hero');
+if (hero) { hero.classList.remove('done'); void hero.offsetWidth; hero.classList.add('done'); }
+if (dakaSendOn() && window.chatAddIn) {
+try { window.chatAddIn(window.taFit ? window.taFit(m) : m, { tag: '打卡' }); } catch (e) {}
+}
+}
+}
+}
+if (dakaApp) dakaApp.addEventListener('click', () => { if (editingNow()) return; openPage(dakaPage); dakaRender(); });
+document.getElementById('daka-back').addEventListener('click', () => backHome(dakaPage));
+document.getElementById('daka-list').addEventListener('click', function (e) {
+const t = e.target; if (!t || !t.closest) return;
+const del = t.closest('[data-dkdel]');
+if (del) {
+if (editingNow() || !window.openModal) return;
+const plans = dakaPlans();
+const p = plans.find(x => x.id === del.getAttribute('data-dkdel'));
+if (!p) return;
+window.openModal('删除计划「' + p.name + '」？', '', function () {
+dakaSavePlans(dakaPlans().filter(x => x.id !== p.id));
+dakaRender(); toast('已删除');
+}, { noInput: true });
+return;
+}
+const row = t.closest('[data-dk]');
+if (row) { if (editingNow()) return; dakaToggle(row.getAttribute('data-dk')); }
+});
+document.getElementById('daka-add').addEventListener('click', function () {
+if (editingNow() || !window.openModal) return;
+window.openModal('新计划', '', function (v) {
+const name = String(v || '').trim();
+if (!name) return;
+const plans = dakaPlans();
+plans.push({ id: 'dk' + Date.now().toString(36), name: name, t: Date.now() });
+dakaSavePlans(plans); dakaRender(); toast('已添加');
+}, { maxlength: 20, placeholder: '比如：背 20 个单词' });
+});
+document.getElementById('daka-add-msg').addEventListener('click', function () {
+if (editingNow() || !window.openModal) return;
+window.openModal('添加鼓励字卡', '', function (v) {
+const t = String(v || '').trim();
+if (!t) return;
+const s = curStore(); if (!s) return;
+let a = []; try { a = JSON.parse(s.get('daka-msgs') || '[]'); } catch (e) {}
+a.push(t);
+try { s.set('daka-msgs', JSON.stringify(a)); } catch (e) {}
+toast('已添加');
+}, { maxlength: 30, placeholder: '打卡时 TA 说的话' });
+});
+const dakaSendBtn = document.getElementById('daka-send');
+if (dakaSendBtn) {
+const dakaSendSync = () => { const on = dakaSendOn(); dakaSendBtn.textContent = '发到聊天：' + (on ? '开' : '关'); dakaSendBtn.classList.toggle('on', on); };
+dakaSendSync();
+dakaSendBtn.addEventListener('click', () => { const s = curStore(); const on = !dakaSendOn(); if (s) try { s.set('daka-send-chat', on ? '1' : '0'); } catch (e) {} dakaSendSync(); });
+}
 const PMP_GREET = ['好，我陪着你', '去吧，我在这等你', '专注吧，我不吵你', '嗯，一起加油'];
 const PMP_ENC = ['在呢', '继续哦', '摸摸头', '嗯嗯，陪你', '快了快了', '我在看你专注'];
 const PMP_DONE = ['🍅 完成一个！为你骄傲', '🍅 太棒了，去休息一下吧', '🍅 收工！今天也超认真'];
@@ -77389,6 +77578,9 @@ res: [/^eat-/] },
 { id: 'piggy', name: '存钱罐', group: '桌面功能', scope: 'desk', page: 'page-piggy',
 desc: '存钱目标与流水、心意币两套罐子、来访记录',
 res: [/^piggy-/] },
+{ id: 'daka', name: '计划打卡', group: '桌面功能', scope: 'desk', page: 'page-daka',
+desc: '每日计划列表、打卡记录、连续天数与鼓励字卡',
+res: [/^daka-/] },
 { id: 'pomo', name: '番茄钟', group: '桌面功能', scope: 'desk', page: 'page-pomodoro',
 desc: '番茄钟设置、累计次数与今日进度、陪伴记录',
 res: [/^pomo-/] },
@@ -78592,7 +78784,7 @@ const HUB = [
 { n: '房间（桌面图标）', d: '桌面第 3 页 · 双人小屋：家具互动、舒适度升级、按 TA 分屋', k: '桌面 图标 第3页 第三页 房间 小屋 家具 找不到 在哪', go: ['.app[data-app="room"]'] },
 { n: '喝水（桌面图标）', d: '桌面第 3 页 · 今日杯数进度环，TA 定时催喝水', k: '桌面 图标 第3页 第三页 喝水 杯数 找不到 在哪', go: ['.app[data-app="water"]'] },
 { n: '吃什么（桌面图标）', d: '桌面第 3 页 · 随机抽菜/转盘，问 TA 征求意见', k: '桌面 图标 第3页 第三页 吃什么 吃饭 菜 转盘 找不到 在哪', go: ['.app[data-app="eat"]'] },
-{ n: '存钱罐（桌面图标）', d: '桌面第 3 页 · 存取+小心愿目标，TA 当监督人', k: '桌面 图标 第3页 第三页 存钱罐 攒钱 心愿 找不到 在哪', go: ['.app[data-app="piggy"]'] },
+{ n: '存钱罐（桌面图标）', d: '默认已换成「计划打卡」；桌面编辑模式可重新加回 · 存取+小心愿目标，TA 当监督人', k: '桌面 图标 第3页 第三页 存钱罐 攒钱 心愿 找不到 在哪', go: ['.app[data-app="piggy"]'] },
 { n: '番茄钟（桌面图标）', d: '桌面第 3 页 · 专注/小憩/长休计时，陪伴模式', k: '桌面 图标 第3页 第三页 番茄钟 专注 计时 找不到 在哪', go: ['.app[data-app="pomo"]'] },
 { n: '心意市集（桌面图标）', d: '桌面第 3 页 · 按分类挑商品送礼给 TA；许愿、心愿单、拍卖都在里面', k: '桌面 图标 第3页 第三页 心意市集 市集 商店 礼物 心意币 找不到 在哪', go: ['.app[data-app="market"]'] },
 { n: '心意柜（桌面图标）', d: '桌面第 3 页 · 收到/送出的礼物册与统计', k: '桌面 图标 第3页 第三页 心意柜 礼物柜 礼物 找不到 在哪', go: ['.app[data-app="giftbox"]'] },
@@ -78788,6 +78980,9 @@ const HUB = [
 { n: '存钱罐 · 取一笔', d: '从罐子里取一笔（比如真的买下了想要的东西）', k: '存钱罐 取钱 取出 花掉 取一笔', go: ['.app[data-app="piggy"]', '#piggy-out'] },
 { n: '存钱罐 · 新建小心愿', d: '加一个心愿目标与金额，TA 会当监督人盯着你攒', k: '存钱罐 心愿 目标 监督 攒够 想要', go: ['.app[data-app="piggy"]', '#piggy-set-goal'] },
 { n: '存钱罐 · TA 的碎碎念', d: '加/改你存钱时 TA 说的那句话', k: '存钱罐 碎碎念 字卡 说话 自定义 监督', go: ['.app[data-app="piggy"]', '#piggy-add-msg'] },
+{ n: '计划打卡', d: '桌面第 3 页 · 每日计划列表，点一下完成打卡，看连续天数', k: '打卡 计划 每日 习惯 签到 坚持 daka', go: ['.app[data-app="daka"]'] },
+{ n: '计划打卡 · 新计划', d: '加一个想每天坚持的小事', k: '打卡 新计划 添加 计划 习惯 每日', go: ['.app[data-app="daka"]', '#daka-add'] },
+{ n: '计划打卡 · 鼓励字卡', d: '加/改打卡完成时 TA 鼓励你的话', k: '打卡 鼓励 字卡 说话 自定义 夸奖', go: ['.app[data-app="daka"]', '#daka-add-msg'] },
 { n: '番茄钟 · 设时长', d: '改专注/小憩/长休各多少分钟', k: '番茄钟 时长 分钟 专注 小憩 长休 设定', go: ['.app[data-app="pomo"]', '#pomo-set-dur'] },
 { n: '番茄钟 · 陪伴模式', d: '进入陪读页：TA 在旁边的陪伴界面（有自己的聊天式互动）', k: '番茄钟 陪伴 陪读 一起 学习 专注 界面', go: ['.app[data-app="pomo"]', '#pomo-companion'] },
 { n: '番茄钟 · 夸夸字卡', d: '加/改专注结束时 TA 夸你的话', k: '番茄钟 夸夸 字卡 结束 自定义 奖励', go: ['.app[data-app="pomo"]', '#pomo-add-msg'] },
