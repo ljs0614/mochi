@@ -276,3 +276,48 @@
 [data-chat-style="wechat"][data-theme="dark"] .chat-input-row button:not(.chat-send) {
   color: #CCC;
 }
+
+/* ===== 构建保留：微信风格强化覆盖 =====
+   这段原先只存在于线上成品 index.html 里，源码没有；每次整包构建都会被冲掉，
+   随后聊天页会被「聊天美化」按联系人调过的气泡颜色/透明度/圆角压住，
+   表现为设置里切到微信风格、聊天页却还是旧样子。
+   做法：#page-chat + 双 .msg-bubble 提高优先级，再加 !important。 */
+[data-chat-style="wechat"] #page-chat .msg-bubble.msg-bubble {
+  padding: 9px 12px;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  border: none !important;
+  font-size: 15px;
+  line-height: 1.5;
+  position: relative;
+}
+[data-chat-style="wechat"] #page-chat .msg-in .msg-bubble.msg-bubble {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border: none !important;
+}
+[data-chat-style="wechat"] #page-chat .msg-out .msg-bubble.msg-bubble {
+  background: #95EC69 !important;
+  color: #000000 !important;
+  border: none !important;
+}
+[data-chat-style="wechat"] #page-chat .msg-bubble.msg-bubble:has(> .msg-img:only-child),
+[data-chat-style="wechat"] #page-chat .msg-bubble.msg-bubble:has(> .msg-img-big:only-child),
+[data-chat-style="wechat"] #page-chat .msg-bubble.msg-bubble:has(> .msg-img-sm:only-child) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+  display: inline-block !important;
+}
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img:only-child),
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img-big:only-child),
+[data-chat-style="wechat"] .msg:has(> .msg-bubble > .msg-img-sm:only-child) {
+  align-items: flex-start !important;
+}
+[data-chat-style="wechat"][data-theme="dark"] #page-chat .msg-in .msg-bubble.msg-bubble {
+  background: #2C2C2E !important;
+  color: #F0F0F0 !important;
+}
