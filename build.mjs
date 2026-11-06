@@ -9,7 +9,9 @@ import { dirname, join } from 'node:path';
 
 
 const root = dirname(fileURLToPath(import.meta.url));
-const read = (p) => readFileSync(join(root, 'src', p), 'utf8');
+// Windows 下 git autocrlf 会把 checkout 出来的 src/ 转成 CRLF；哨兵里有多行 needle（用 \n 锚定），
+// 不归一化就会在本地 Windows 构建时误报「修复缺失」。产物统一按 LF 生成（与仓库一致）。
+const read = (p) => readFileSync(join(root, 'src', p), 'utf8').replace(/\r\n/g, '\n');
 
 // ===== --check-sentinels：只检查不构建（v3.27.x，防覆盖专用）=====
 // 用法：node build.mjs --check-sentinels
@@ -89,7 +91,7 @@ function minifyCss(code) {
 
 // ===== 按顺序拼接样式 / 脚本（顺序即生效顺序） =====
 const cssFiles = ['base.css', 'home.css', 'chat-main.css', 'chat-pages.css', 'market.css', 'group-chat.css', 'setting.css', 'tabbar.css', 'dark.css', 'garden.css', 'memo.css', 'memo-arc.css', 'room.css', 'drift-bottle.css', 'applock.css', 'feature-data.css', 'display-tune.css', 'theme-wechat.css'];
-const jsFiles = ['device.js', 'idb.js', 'contacts.js', 'applock.js', 'card-lock.js', 'dcp-master.js', 'media-pool.js','storage-slim.js', 'perf-check.js', 'img-compress.js', 'clock.js', 'tabs.js', 'desktop-slider.js', 'quote-cards.js', 'personalize.js', 'chat.js', 'group-chat.js', 'chatcard.js', 'chat-settings.js', 'reply-settings.js', 'fav-settings.js', 'default-cards-data.js', 'dict-ext-data.js', 'default-cards.js', 'quote-spell.js', 'dream-free.js', 'mood-followup-data.js', 'mood-reply-cards.js', 'ta-mood-data.js', 'ta-mood.js', 'qmc-decrypt.js', 'music-player.js', 'calendar.js', 'divination.js', 'avatar-lib.js', 'ta-ask.js', 'ck-question.js', 'incoming-requests.js', 'ta-invite.js', 'bg-keep.js', 'records.js', 'call.js', 'mail.js', 'feed.js', 'loc-lib.js', 'p2-features.js', 'gift-shop.js', 'memo-app.js', 'memo-arc.js', 'my-arc.js', 'period.js', 'accounting.js', 'garden.js', 'room.js', 'drift-bottle.js', 'decision.js', 'group-decision.js', 'pong.js', 'snake-game.js', 'breakout.js', 'connect-four.js', 'coop-mine.js', 'fishing.js', 'memory-game.js', 'gomoku.js', 'linkup.js', 'match3.js', 'auction.js', 'arcade.js', 'truth-spin.js', 'guess-number.js', 'chat-fx.js', 'mood-diary.js', 'sfx.js', 'fullscreen.js', 'data-backup.js', 'feature-data.js', 'pwa.js', 'ver-check.js', 'cjian.js', 'feature-hub.js', 'settings-help.js', 'onboarding.js', 'page-coach.js', 'card-audit.js', 'mobile-adapt.js'];
+const jsFiles = ['device.js', 'idb.js', 'contacts.js', 'applock.js', 'card-lock.js', 'dcp-master.js', 'media-pool.js','storage-slim.js', 'perf-check.js', 'img-compress.js', 'clock.js', 'tabs.js', 'desktop-slider.js', 'quote-cards.js', 'personalize.js', 'chat.js', 'group-chat.js', 'chatcard.js', 'chat-settings.js', 'reply-settings.js', 'fav-settings.js', 'default-cards-data.js', 'dict-ext-data.js', 'default-cards.js', 'quote-spell.js', 'dream-free.js', 'mood-followup-data.js', 'mood-reply-cards.js', 'ta-mood-data.js', 'ta-mood.js', 'qmc-decrypt.js', 'music-player.js', 'calendar.js', 'divination.js', 'avatar-lib.js', 'ta-ask.js', 'ck-question.js', 'incoming-requests.js', 'ta-invite.js', 'bg-keep.js', 'records.js', 'call.js', 'mail.js', 'feed.js', 'loc-lib.js', 'p2-features.js', 'gift-shop.js', 'memo-app.js', 'memo-arc.js', 'my-arc.js', 'period.js', 'accounting.js', 'garden.js', 'room.js', 'room-chat.js', 'drift-bottle.js', 'decision.js', 'group-decision.js', 'pong.js', 'snake-game.js', 'breakout.js', 'connect-four.js', 'coop-mine.js', 'fishing.js', 'memory-game.js', 'gomoku.js', 'linkup.js', 'match3.js', 'auction.js', 'arcade.js', 'truth-spin.js', 'guess-number.js', 'chat-fx.js', 'mood-diary.js', 'sfx.js', 'fullscreen.js', 'data-backup.js', 'feature-data.js', 'pwa.js', 'ver-check.js', 'cjian.js', 'feature-hub.js', 'settings-help.js', 'onboarding.js', 'page-coach.js', 'card-audit.js', 'mobile-adapt.js'];
 
 // ===== PERF-PLAN 阶段 1：JS 外置化（2026-09-18）=====
 // 首开「3.8MB 内联 JS 主线程整段解析执行」是 iOS/中低端安卓卡顿的结构性大头
@@ -100,7 +102,7 @@ const jsFiles = ['device.js', 'idb.js', 'contacts.js', 'applock.js', 'card-lock.
 // 入边 15~120；首批上线验证后按 §2 裁决门 + 功能 verify 运行时验证通过后外置，21:1x 批）；
 // snapshot 后新增的 perf-check/feature-data/page-coach 保守留 core。
 // 改这份清单必须同步看 PERF-PLAN §2 的分级规则与 tools/verify-ext-boot.mjs 裁决门。
-const extFiles = ['calendar.js', 'mail.js', 'memo-app.js', 'memo-arc.js', 'my-arc.js', 'accounting.js', 'garden.js', 'room.js', 'drift-bottle.js', 'decision.js', 'group-decision.js', 'mood-diary.js', 'pong.js', 'snake-game.js', 'breakout.js', 'connect-four.js', 'coop-mine.js', 'fishing.js', 'memory-game.js', 'gomoku.js', 'linkup.js', 'match3.js', 'arcade.js', 'settings-help.js', 'onboarding.js', 'card-audit.js', 'divination.js', 'loc-lib.js', 'ck-question.js', 'ta-invite.js', 'gift-shop.js', 'feed.js', 'cjian.js', 'call.js', 'music-player.js'];
+const extFiles = ['calendar.js', 'mail.js', 'memo-app.js', 'memo-arc.js', 'my-arc.js', 'accounting.js', 'garden.js', 'room.js', 'room-chat.js', 'drift-bottle.js', 'decision.js', 'group-decision.js', 'mood-diary.js', 'pong.js', 'snake-game.js', 'breakout.js', 'connect-four.js', 'coop-mine.js', 'fishing.js', 'memory-game.js', 'gomoku.js', 'linkup.js', 'match3.js', 'arcade.js', 'settings-help.js', 'onboarding.js', 'card-audit.js', 'divination.js', 'loc-lib.js', 'ck-question.js', 'ta-invite.js', 'gift-shop.js', 'feed.js', 'cjian.js', 'call.js', 'music-player.js'];
 const extSet = new Set(extFiles);
 const coreFiles = jsFiles.filter(f => !extSet.has(f));
 
