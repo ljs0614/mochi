@@ -231,7 +231,9 @@
       '[data-theme="dark"] .rc-input{background:#2B261F;color:#EDE5DA;border-color:rgba(255,255,255,.16);}',
       '[data-theme="dark"] .rc-set{background:#201D17;}',
       '[data-theme="dark"] .rc-set input,[data-theme="dark"] .rc-set textarea{background:#2B261F;color:#EDE5DA;border-color:rgba(255,255,255,.16);}',
-      '[data-theme="dark"] .rc-set .rc-close,[data-theme="dark"] .rc-set .rc-test{background:#2B261F;color:#D8CBB8;border-color:rgba(255,255,255,.16);}'
+      '[data-theme="dark"] .rc-set .rc-close,[data-theme="dark"] .rc-set .rc-test{background:#2B261F;color:#D8CBB8;border-color:rgba(255,255,255,.16);}',
+      '.rc-clear{border:1px solid #E2B4B0;background:#FFF6F5;color:#C0504D;font-weight:600;}',
+      '[data-theme="dark"] .rc-clear{background:#3A2A28;border-color:#8A524E;color:#E8B4B0;}'
     ].join('');
     document.head.appendChild(st);
   }
@@ -294,6 +296,7 @@
         '<div class="rc-btns"><button type="button" class="rc-test" id="rc-c-test">测试连通性</button>' +
         '<button type="button" class="rc-save" id="rc-c-save">保存</button></div>' +
         '<div class="rc-status" id="rc-c-status"></div>' +
+        '<div class="rc-btns"><button type="button" class="rc-clear" id="rc-c-clear">清空和 TA 的聊天记录</button></div>' +
         '<div class="rc-btns"><button type="button" class="rc-close" id="rc-c-close">返回对话</button></div>' +
       '</div>';
     phone.appendChild(overlay);
@@ -315,6 +318,13 @@
       inputEl.style.height = Math.min(96, inputEl.scrollHeight) + 'px';
     });
     overlay.querySelector('#rc-c-close').addEventListener('click', function () { setPanel.hidden = true; });
+    overlay.querySelector('#rc-c-clear').addEventListener('click', function () {
+      if (!confirm('清空和 ' + nameOf() + ' 在小屋里的聊天记录？（只清空当前这个联系人，其他联系人的记录不会受影响，API 配置也不会动）')) return;
+      try { localStorage.removeItem(THREAD_PREFIX + myCid()); } catch (e) {}
+      setPanel.hidden = true;
+      renderThread();
+      toast('已清空');
+    });
     overlay.querySelector('#rc-c-save').addEventListener('click', function () {
       saveCfg({
         base: overlay.querySelector('#rc-c-base').value.trim(),
