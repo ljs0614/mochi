@@ -1677,6 +1677,23 @@
       if (rad != null && String(rad).trim() !== '' && String(rad) !== BUBBLE_RADIUS_DEFAULT) {
         rules.push('#page-chat .msg-bubble.msg-bubble{border-radius:var(--chat-bubble-radius,18px)!important}');
       }
+      // 气泡框大小 / 字号 / 双方文字颜色同理：用户显式改过（≠ 默认值）时补强制层。
+      // 不加这层，自定义气泡 CSS（!important）和微信风格覆盖（更高特异性 / !important）
+      // 会把这几项压回原样，表现为「设置里改了、聊天页没反应」。
+      const sc = (sel) => sel + ',[data-chat-style="wechat"] ' + sel;
+      const padV = store.get('cs-bubble-size');
+      if (padV != null && String(padV).trim() !== '' && String(padV) !== '11px 14px') {
+        rules.push(sc('#page-chat .msg-bubble.msg-bubble') + '{padding:var(--chat-bubble-pad)!important}');
+      }
+      const fsV = store.get('cs-font-size');
+      if (fsV != null && String(fsV).trim() !== '' && String(fsV) !== '14px') {
+        rules.push(sc('#page-chat .msg-bubble.msg-bubble') + '{font-size:var(--chat-font-size)!important}');
+      }
+      const DEF = themeDefaults();
+      const iInk = store.get('cs-in-ink');
+      const oInk = store.get('cs-out-ink');
+      if (iInk && iInk !== DEF.inInk) { rules.push(sc('#page-chat .msg-in .msg-bubble.msg-bubble') + '{color:var(--msg-in-ink)!important}'); }
+      if (oInk && oInk !== DEF.outInk) { rules.push(sc('#page-chat .msg-out .msg-bubble.msg-bubble') + '{color:var(--msg-out-ink)!important}'); }
     } catch (e) {}
     if (!rules.length) return;
     const st = document.createElement('style');
