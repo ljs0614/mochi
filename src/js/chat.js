@@ -3599,15 +3599,20 @@ updateChatLoading(); // 渲染完成（有内容或就绪）→ 隐藏加载进�
 };
 const buildChunk = function () {
 if (myToken !== _rwToken) { try { restoreInplaceDrafts(); } catch (e) {} return; } // #718 作废：草稿回填旧 DOM（新轮 collect 会再收），不丢草稿
+// FIX 2026-11-15：分帧期间 msgs 被另一处权威同步/裁剪替换（数组变短或换新数组）时，
+// 继续按下标取会拿到 undefined ⇒ renderMsg(undefined) 抛错；此时 body 已被清空、后续
+// 批次也不再执行＝聊天区白一下（用户报「自己崩一下然后又好了」）。数据已变就作废本轮、整窗重来。
+if (msgs.length !== len) { try { renderWindow(false, false, true); } catch (e) {} return; }
 const end = Math.min(i + RENDER_CHUNK, len);
 for (; i < end; i++) {
-maybeInsertDivider(i);
 const _rm = msgs[i];
-if (_rm && (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
-(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === '')))) {
+if (!_rm || typeof _rm !== 'object') continue; // 空位/坏记录跳过，绝不让整窗渲染中断
+maybeInsertDivider(i);
+if (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
+(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === ''))) {
 _liteIdx.push(i);
 }
-const m = renderMsg(msgs[i]);
+const m = renderMsg(_rm);
 m.dataset.idx = i; // 覆盖 renderMsg 内的 msgs.length-1（批量渲染时必须为真实下标）
 }
 if (i < len) { setTimeout(buildChunk, 0); return; }
@@ -3618,13 +3623,14 @@ setTimeout(buildChunk, 0); // #718 分帧构建
 return;
 }
 for (; i < len; i++) {
-maybeInsertDivider(i);
 const _rm = msgs[i];
-if (_rm && (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
-(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === '')))) {
+if (!_rm || typeof _rm !== 'object') continue; // 空位/坏记录跳过，绝不让整窗渲染中断
+maybeInsertDivider(i);
+if (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
+(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === ''))) {
 _liteIdx.push(i);
 }
-const m = renderMsg(msgs[i]);
+const m = renderMsg(_rm);
 m.dataset.idx = i; // 覆盖 renderMsg 内的 msgs.length-1（批量渲染时必须为真实下标）
 }
 finishSwap();

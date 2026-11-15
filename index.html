@@ -10650,9 +10650,9 @@ display: none !important;
     <div class="splash-footcard">
       <!-- v3.8.y：底部版本块——两行：名称+版本 / 部署时间+实时秒数（实时秒写入 #splash-ver-live） -->
       <!-- #570：第三行开屏新版检测（ver-check.js 渲染）：检测中 / ✓已是最新 / ⇩有新版本可点更新 -->
-      <div class="splash-ver" id="splash-ver" data-build-ts="1793176560000">
+      <div class="splash-ver" id="splash-ver" data-build-ts="1794743528204">
         <span class="sv-app">Mochi 字卡传讯 <b>v3.26.570</b></span>
-        <span class="sv-deploy">部署于 2026-10-28 16:36<span id="splash-ver-live"></span></span>
+        <span class="sv-deploy">部署于 2026-11-15 19:52<span id="splash-ver-live"></span></span>
         <span class="sv-check" id="splash-ver-check" hidden></span>
       </div>
       <!-- v3.5.120：数据（IndexedDB 回填）加载完成前不显示「点击进入」按钮，
@@ -36439,15 +36439,17 @@ updateChatLoading(); // 渲染完成（有内容或就绪）→ 隐藏加载进�
 };
 const buildChunk = function () {
 if (myToken !== _rwToken) { try { restoreInplaceDrafts(); } catch (e) {} return; } // #718 作废：草稿回填旧 DOM（新轮 collect 会再收），不丢草稿
+if (msgs.length !== len) { try { renderWindow(false, false, true); } catch (e) {} return; }
 const end = Math.min(i + RENDER_CHUNK, len);
 for (; i < end; i++) {
-maybeInsertDivider(i);
 const _rm = msgs[i];
-if (_rm && (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
-(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === '')))) {
+if (!_rm || typeof _rm !== 'object') continue;
+maybeInsertDivider(i);
+if (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
+(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === ''))) {
 _liteIdx.push(i);
 }
-const m = renderMsg(msgs[i]);
+const m = renderMsg(_rm);
 m.dataset.idx = i; // 覆盖 renderMsg 内的 msgs.length-1（批量渲染时必须为真实下标）
 }
 if (i < len) { setTimeout(buildChunk, 0); return; }
@@ -36458,13 +36460,14 @@ setTimeout(buildChunk, 0); // #718 分帧构建
 return;
 }
 for (; i < len; i++) {
-maybeInsertDivider(i);
 const _rm = msgs[i];
-if (_rm && (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
-(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === '')))) {
+if (!_rm || typeof _rm !== 'object') continue;
+maybeInsertDivider(i);
+if (_rm._lsLite || _rm.img === '' || _rm.voice === '' ||
+(Array.isArray(_rm.parts) && _rm.parts.some(p => p && typeof p.v === 'string' && p.v === ''))) {
 _liteIdx.push(i);
 }
-const m = renderMsg(msgs[i]);
+const m = renderMsg(_rm);
 m.dataset.idx = i; // 覆盖 renderMsg 内的 msgs.length-1（批量渲染时必须为真实下标）
 }
 finishSwap();
@@ -78224,6 +78227,11 @@ t.className = 'cc-toast'; void t.offsetWidth; t.className = 'cc-toast show';
 clearTimeout(t._timer);
 t._timer = setTimeout(() => { t.className = 'cc-toast'; }, 3000);
 }
+let _pageBuildTs = 0;
+try {
+const _sv0 = document.getElementById('splash-ver');
+_pageBuildTs = Number(_sv0 && _sv0.getAttribute('data-build-ts')) || 0;
+} catch (e) {}
 let _userActTs = 0;
 function markUserAct() { if (!_userActTs) _userActTs = Date.now(); }
 ['touchstart', 'pointerdown', 'mousedown', 'keydown'].forEach(function (t) {
@@ -78245,11 +78253,25 @@ if (navigator.serviceWorker && navigator.serviceWorker.controller) {
 let done = false;
 if (_prMsg) navigator.serviceWorker.removeEventListener('message', _prMsg);
 _prMsg = function (e) {
-if (e.data && e.data.type === 'PRECACHE_DONE') { done = true; doReload(); }
+if (!e.data || e.data.type !== 'PRECACHE_DONE' || done) return;
+done = true;
+if (e.data.ok === false) {
+toast('新版本还没下载完，请稍后再点一次');
+if (auto) showVerBar(autoTs);
+return;
+}
+doReload();
 };
 navigator.serviceWorker.addEventListener('message', _prMsg);
 navigator.serviceWorker.controller.postMessage({ type: 'PRECACHE_NOW', urls: ['./index.html', './version.json'].concat(window.__mochiExtFiles || []) });
-setTimeout(function () { if (!done) doReload(); }, 2500); // 兜底：SW 预取异常也刷新
+if (!auto) toast('正在下载新版本，请稍候…');
+setTimeout(function () {
+if (done) return;
+done = true;
+try { if (_prMsg) navigator.serviceWorker.removeEventListener('message', _prMsg); } catch (e2) {}
+toast('新版本下载超时，请检查网络后再试');
+if (auto) showVerBar(autoTs);
+}, 35000);
 } else {
 doReload();
 }
@@ -78296,7 +78318,9 @@ return fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
 .catch(function (err) { if (timer) clearTimeout(timer); throw err; });
 }
 function showVerBar(onlineTs) {
-if (_verBarShown || !verShouldNotify(onlineTs) || verSeen(onlineTs)) return;
+if (_verBarShown) return;
+const _stale = _pageBuildTs > 0 && Number(onlineTs) > _pageBuildTs;
+if (!_stale && (!verShouldNotify(onlineTs) || verSeen(onlineTs))) return;
 _verBarShown = true;
 verMarkNotify(onlineTs);
 const barEl = document.getElementById('ver-update-bar');

@@ -204,11 +204,18 @@ self.addEventListener('message', (e) => {
         return false;
       })
     ))
-  ).then(() => {
-    // 无论成功与否都回执，页面有超时兜底；网络再差也要让刷新流程能继续
-    try { if (e.source && e.source.postMessage) e.source.postMessage({ type: 'PRECACHE_DONE' }); } catch (x) {}
+  ).then((rs) => {
+    // FIX 2026-11-15：回执带上「index.html 是否真的写入缓存」——页面据此决定要不要切页面。
+    // 原逻辑无论成败都回执、页面到点就 reload，弱网下等于白刷（reload 又回旧缓存）。
+    let ok = false;
+    try {
+      for (let k = 0; k < urls.length; k++) {
+        if (isIndexUrl(urls[k]) && rs && rs[k] && rs[k].status === 'fulfilled' && rs[k].value === true) { ok = true; break; }
+      }
+    } catch (x) {}
+    try { if (e.source && e.source.postMessage) e.source.postMessage({ type: 'PRECACHE_DONE', ok: ok }); } catch (x) {}
   }).catch(() => {
-    try { if (e.source && e.source.postMessage) e.source.postMessage({ type: 'PRECACHE_DONE' }); } catch (x) {}
+    try { if (e.source && e.source.postMessage) e.source.postMessage({ type: 'PRECACHE_DONE', ok: false }); } catch (x) {}
   });
 });
 

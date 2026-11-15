@@ -21,6 +21,15 @@
     t._timer = setTimeout(() => { t.className = 'cc-toast'; }, 3000);
   }
 
+  // FIX 2026-11-15：本页面构建时间戳（构建期注入 #splash-ver[data-build-ts]）。
+  // 用于判断页面是否真的落后于线上：真的落后时更新条不再被「同版本只提示一次」的历史
+  // 记录压掉——否则用户错过一次提示后就永久静默，一直停在旧缓存版本（实测落后 11 天）。
+  let _pageBuildTs = 0;
+  try {
+    const _sv0 = document.getElementById('splash-ver');
+    _pageBuildTs = Number(_sv0 && _sv0.getAttribute('data-build-ts')) || 0;
+  } catch (e) {}
+
   // ================= v3.26.x：#279 自动升级防打断——用户活动感知 =================
   // 多机型（iQOO12 Chrome 等，机型无关）反馈「用着用着页面自己重开回开屏、问答门又要重答」：
   // #273 冷加载自动升级的 reload 在 PRECACHE_NOW 预取完成那一刻无条件落地，弱网（GitHub
@@ -58,13 +67,31 @@
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         let done = false;
         if (_prMsg) navigator.serviceWorker.removeEventListener('message', _prMsg);
+        // FIX 2026-11-15：只有 SW 确认最新 index.html 已写进缓存才切页面。
+        // 原逻辑 2.5s 到点就 reload——GitHub Pages 国内弱网下 index 常要十几秒才下完，
+        // 此时 reload 仍命中旧缓存＝「点了刷新还是旧版」，用户越点越刷不上。
         _prMsg = function (e) {
-          if (e.data && e.data.type === 'PRECACHE_DONE') { done = true; doReload(); }
+          if (!e.data || e.data.type !== 'PRECACHE_DONE' || done) return;
+          done = true;
+          if (e.data.ok === false) {
+            toast('新版本还没下载完，请稍后再点一次');
+            if (auto) showVerBar(autoTs);
+            return;
+          }
+          doReload();
         };
         navigator.serviceWorker.addEventListener('message', _prMsg);
         // PERF-PLAN 阶段 1：带上外置 js/ 清单——弱网点「刷新使用新版」时 ext 一并预取落新缓存，防旧 index 配新 ext 的混合版本（SW 侧零改动，urls 数组本就支持）
         navigator.serviceWorker.controller.postMessage({ type: 'PRECACHE_NOW', urls: ['./index.html', './version.json'].concat(window.__mochiExtFiles || []) });
-        setTimeout(function () { if (!done) doReload(); }, 2500); // 兜底：SW 预取异常也刷新
+        if (!auto) toast('正在下载新版本，请稍候…');
+        // 兜底：SW 的 index 下载上限 30s，留 5s 余量；到点仍无回执就放弃本次（不盲刷新）
+        setTimeout(function () {
+          if (done) return;
+          done = true;
+          try { if (_prMsg) navigator.serviceWorker.removeEventListener('message', _prMsg); } catch (e2) {}
+          toast('新版本下载超时，请检查网络后再试');
+          if (auto) showVerBar(autoTs);
+        }, 35000);
       } else {
         doReload();
       }
@@ -136,7 +163,12 @@
   // 显示更新条（版本轮询 + SW 检测共用）：跨通道一次性去重 + 已确认过本版本不再提醒
   // FIX 2026-09-07 #225v2：追加 verSeen 一版一弹（同版本不重复弹；新版本立即弹，无任何时间窗）
   function showVerBar(onlineTs) {
-    if (_verBarShown || !verShouldNotify(onlineTs) || verSeen(onlineTs)) return;
+    if (_verBarShown) return;
+    // FIX 2026-11-15：页面自身构建时间戳确实小于线上时＝真的没更新成功，跳过「同版本
+    // 只提示一次」的免打扰（本页面内仍由 _verBarShown 去重）。不跳过的后果：一次没刷上
+    // 就永久静默，用户停在旧版还以为已是最新。
+    const _stale = _pageBuildTs > 0 && Number(onlineTs) > _pageBuildTs;
+    if (!_stale && (!verShouldNotify(onlineTs) || verSeen(onlineTs))) return;
     _verBarShown = true;
     verMarkNotify(onlineTs);
     const barEl = document.getElementById('ver-update-bar');
